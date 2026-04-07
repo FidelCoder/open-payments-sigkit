@@ -1,0 +1,10 @@
+{
+  "method": "POST",
+  "url": "https://auth.example.com/grants",
+  "headers": {
+    "accept": "application/json",
+    "content-type": "application/json"
+  },
+  "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}"
+}
+

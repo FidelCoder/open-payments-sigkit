@@ -1,0 +1,21 @@
+{
+  "name": "@open-payments-devkit/examples",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "dev": "tsc -p tsconfig.json --watch",
+    "example:inspect": "tsx src/inspect.ts",
+    "example:resource-write": "tsx src/resource-write.ts",
+    "example:sign": "tsx src/sign-and-verify.ts",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@open-payments-devkit/core": "workspace:*",
+    "@open-payments-devkit/fixtures": "workspace:*"
+  }
+}
+

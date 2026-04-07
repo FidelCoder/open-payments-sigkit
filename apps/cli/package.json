@@ -1,0 +1,22 @@
+{
+  "name": "@open-payments-devkit/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "op-sig": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@open-payments-devkit/core": "workspace:*",
+    "@open-payments-devkit/fixtures": "workspace:*",
+    "commander": "^13.0.0"
+  }
+}
+

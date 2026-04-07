@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "url": "https://rs.example.com/incoming-payments",
+  "headers": {
+    "accept": "application/json",
+    "authorization": "GNAP access_token=\"incoming-token\"",
+    "content-type": "application/json"
+  },
+  "body": "{\"walletAddress\":\"https://wallet.example.com/alice\",\"incomingAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"2500\"},\"expiresAt\":\"2026-12-31T23:59:59.000Z\"}"
+}
+

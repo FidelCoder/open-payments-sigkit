@@ -1,0 +1,8 @@
+{
+  "kid": "fixture-primary-key",
+  "alg": "EdDSA",
+  "kty": "OKP",
+  "crv": "Ed25519",
+  "x": "quQDTD_w2wCX3pHrtMM2QoxK5JD8VKXAVL5OaWO_TMU"
+}
+

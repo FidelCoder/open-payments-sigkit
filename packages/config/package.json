@@ -1,0 +1,12 @@
+{
+  "name": "@open-payments-devkit/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "eslint",
+    "prettier",
+    "typescript"
+  ]
+}
+

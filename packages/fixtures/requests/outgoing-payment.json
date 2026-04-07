@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "url": "https://rs.example.com/outgoing-payments",
+  "headers": {
+    "accept": "application/json",
+    "authorization": "GNAP access_token=\"outgoing-token\"",
+    "content-type": "application/json"
+  },
+  "body": "{\"quoteId\":\"https://rs.example.com/quotes/123\",\"receiver\":\"https://wallet.example.com/bob\",\"debitAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"1250\"}}"
+}
+

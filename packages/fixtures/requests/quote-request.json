@@ -1,0 +1,11 @@
+{
+  "method": "POST",
+  "url": "https://rs.example.com/quotes",
+  "headers": {
+    "accept": "application/json",
+    "authorization": "GNAP access_token=\"quote-token\"",
+    "content-type": "application/json"
+  },
+  "body": "{\"receiver\":\"https://wallet.example.com/bob\",\"method\":\"ilp\",\"sourceAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"1250\"}}"
+}
+

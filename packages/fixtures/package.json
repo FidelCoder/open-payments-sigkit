@@ -1,0 +1,27 @@
+{
+  "name": "@open-payments-devkit/fixtures",
+  "version": "0.1.0",
+  "description": "Deterministic requests and Ed25519 key fixtures for the Open Payments HTTP Signatures devkit.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "keys",
+    "requests"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}
+
