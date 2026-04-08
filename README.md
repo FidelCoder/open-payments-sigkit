@@ -111,7 +111,7 @@ The CLI binary name is `op-sig`.
 Release-facing notes:
 
 - the CLI is built from [`apps/cli`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/apps/cli)
-- smoke coverage exercises `digest`, `preset`, `sign`, `verify`, and `inspect`
+- CLI integration coverage exercises `digest`, `preset`, `sign`, `verify`, and `inspect`
 - `pnpm release:check` runs the full validation path before a push or tag
 
 Example commands:
@@ -149,7 +149,7 @@ The docs app lives in [`apps/docs`](/home/core/Desktop/devkit/open-payments-http
 - `/sign` signing workflow
 - `/verify` verification workflow
 - `/inspect` canonical base inspection
-- `/examples` bundled example payloads
+- `/examples` bundled example payloads with direct links into the signing, verification, and inspection tools
 
 Start it with:
 
@@ -172,6 +172,7 @@ More detail lives in [docs/presets.md](/home/core/Desktop/devkit/open-payments-h
 - Verification returns stable codes and structured details for debugging
 - Tests use deterministic fixtures from [`packages/fixtures`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/packages/fixtures)
 - Publish-facing metadata is defined on the core and fixtures packages for future release work
+- GitHub Actions runs the same `pnpm release:check` validation path used for local release checks
 
 ## Testing
 

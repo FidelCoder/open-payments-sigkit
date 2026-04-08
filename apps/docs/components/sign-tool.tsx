@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import type { PresetName, SignedRequestResult } from '@open-payments-devkit/core'
+import type { SignedRequestResult } from '@open-payments-devkit/core'
+import { ExampleSwitcher } from './example-switcher'
 import { RequestEditor } from './request-editor'
 import { ResultCard } from './result-card'
+import type { DemoExample, DemoSelectionName, DocsPresetMode } from '../lib/demo-defaults'
 
 type SignToolProps = {
   defaults: {
@@ -12,17 +14,28 @@ type SignToolProps = {
     method: string
     url: string
   }
+  examples: DemoExample[]
+  initialPreset: DocsPresetMode
   keyId: string
   privateKeyJwkText: string
-  presetOptions: PresetName[]
+  presetOptions: DemoExample['preset'][]
+  selectedExample: DemoSelectionName
 }
 
-export function SignTool({ defaults, keyId, presetOptions, privateKeyJwkText }: SignToolProps) {
+export function SignTool({
+  defaults,
+  examples,
+  initialPreset,
+  keyId,
+  presetOptions,
+  privateKeyJwkText,
+  selectedExample
+}: SignToolProps) {
   const [method, setMethod] = useState(defaults.method)
   const [url, setUrl] = useState(defaults.url)
   const [headersText, setHeadersText] = useState(defaults.headersText)
   const [body, setBody] = useState(defaults.body)
-  const [preset, setPreset] = useState<PresetName>('grant-request')
+  const [preset, setPreset] = useState<DocsPresetMode>(initialPreset)
   const [keyIdValue, setKeyIdValue] = useState(keyId)
   const [privateKeyText, setPrivateKeyText] = useState(privateKeyJwkText)
   const [componentsText, setComponentsText] = useState('')
@@ -36,6 +49,8 @@ export function SignTool({ defaults, keyId, presetOptions, privateKeyJwkText }: 
 
   return (
     <div className="tool-layout">
+      <ExampleSwitcher currentExample={selectedExample} examples={examples} route="sign" />
+
       <form
         className="tool-card"
         onSubmit={(event) => {
@@ -51,7 +66,7 @@ export function SignTool({ defaults, keyId, presetOptions, privateKeyJwkText }: 
                 keyId: keyIdValue,
                 method,
                 nonce,
-                preset,
+                preset: preset === 'custom' ? '' : preset,
                 privateKeyJwkText: privateKeyText,
                 tag,
                 url
@@ -102,8 +117,9 @@ export function SignTool({ defaults, keyId, presetOptions, privateKeyJwkText }: 
 
         <div className="request-editor">
           <label className="field">
-            <span>Preset</span>
-            <select value={preset} onChange={(event) => setPreset(event.target.value as PresetName)}>
+            <span>Preset policy</span>
+            <select value={preset} onChange={(event) => setPreset(event.target.value as DocsPresetMode)}>
+              <option value="custom">custom (no preset)</option>
               {presetOptions.map((option) => (
                 <option key={option} value={option}>
                   {option}
@@ -166,4 +182,3 @@ export function SignTool({ defaults, keyId, presetOptions, privateKeyJwkText }: 
     </div>
   )
 }
-

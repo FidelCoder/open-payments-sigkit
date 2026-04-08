@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import type { PresetName, VerificationExplanation, VerificationResult } from '@open-payments-devkit/core'
+import type { VerificationExplanation, VerificationResult } from '@open-payments-devkit/core'
+import { ExampleSwitcher } from './example-switcher'
 import { RequestEditor } from './request-editor'
 import { ResultCard } from './result-card'
+import type { DemoExample, DemoSelectionName, DocsPresetMode } from '../lib/demo-defaults'
 
 type VerifyToolProps = {
   defaults: {
@@ -12,22 +14,28 @@ type VerifyToolProps = {
     method: string
     url: string
   }
+  examples: DemoExample[]
+  initialPreset: DocsPresetMode
   jwksText: string
-  presetOptions: PresetName[]
+  presetOptions: DemoExample['preset'][]
   publicKeyJwkText: string
+  selectedExample: DemoSelectionName
 }
 
 export function VerifyTool({
   defaults,
+  examples,
+  initialPreset,
   jwksText,
   presetOptions,
-  publicKeyJwkText
+  publicKeyJwkText,
+  selectedExample
 }: VerifyToolProps) {
   const [method, setMethod] = useState(defaults.method)
   const [url, setUrl] = useState(defaults.url)
   const [headersText, setHeadersText] = useState(defaults.headersText)
   const [body, setBody] = useState(defaults.body)
-  const [preset, setPreset] = useState<PresetName>('protected-request')
+  const [preset, setPreset] = useState<DocsPresetMode>(initialPreset)
   const [publicKeyText, setPublicKeyText] = useState(publicKeyJwkText)
   const [jwksValue, setJwksValue] = useState(jwksText)
   const [requiredComponentsText, setRequiredComponentsText] = useState('')
@@ -39,6 +47,8 @@ export function VerifyTool({
 
   return (
     <div className="tool-layout">
+      <ExampleSwitcher currentExample={selectedExample} examples={examples} route="verify" />
+
       <form
         className="tool-card"
         onSubmit={(event) => {
@@ -50,7 +60,7 @@ export function VerifyTool({
                 headersText,
                 jwksText: jwksValue,
                 method,
-                preset,
+                preset: preset === 'custom' ? '' : preset,
                 publicKeyJwkText: publicKeyText,
                 requireDigestForBody,
                 requiredComponentsText,
@@ -106,8 +116,9 @@ export function VerifyTool({
 
         <div className="request-editor">
           <label className="field">
-            <span>Preset</span>
-            <select value={preset} onChange={(event) => setPreset(event.target.value as PresetName)}>
+            <span>Preset policy</span>
+            <select value={preset} onChange={(event) => setPreset(event.target.value as DocsPresetMode)}>
+              <option value="custom">custom (no preset)</option>
               {presetOptions.map((option) => (
                 <option key={option} value={option}>
                   {option}
@@ -162,4 +173,3 @@ export function VerifyTool({
     </div>
   )
 }
-

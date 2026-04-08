@@ -1,5 +1,4 @@
 import js from '@eslint/js'
-import nextPlugin from '@next/eslint-plugin-next'
 import tsPlugin from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 import prettier from 'eslint-config-prettier'
@@ -52,16 +51,6 @@ export default [
         }
       ],
       '@typescript-eslint/no-explicit-any': 'error'
-    }
-  },
-  {
-    files: ['apps/docs/**/*.{ts,tsx}'],
-    plugins: {
-      '@next/next': nextPlugin
-    },
-    rules: {
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs['core-web-vitals'].rules
     }
   },
   prettier

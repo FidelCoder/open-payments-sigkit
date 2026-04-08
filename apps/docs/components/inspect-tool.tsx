@@ -2,8 +2,10 @@
 
 import { useState, useTransition } from 'react'
 import type { InspectionResult } from '@open-payments-devkit/core'
+import { ExampleSwitcher } from './example-switcher'
 import { RequestEditor } from './request-editor'
 import { ResultCard } from './result-card'
+import type { DemoExample, DemoSelectionName } from '../lib/demo-defaults'
 
 type InspectToolProps = {
   defaults: {
@@ -12,9 +14,11 @@ type InspectToolProps = {
     method: string
     url: string
   }
+  examples: DemoExample[]
+  selectedExample: DemoSelectionName
 }
 
-export function InspectTool({ defaults }: InspectToolProps) {
+export function InspectTool({ defaults, examples, selectedExample }: InspectToolProps) {
   const [method, setMethod] = useState(defaults.method)
   const [url, setUrl] = useState(defaults.url)
   const [headersText, setHeadersText] = useState(defaults.headersText)
@@ -25,6 +29,8 @@ export function InspectTool({ defaults }: InspectToolProps) {
 
   return (
     <div className="tool-layout">
+      <ExampleSwitcher currentExample={selectedExample} examples={examples} route="inspect" />
+
       <form
         className="tool-card"
         onSubmit={(event) => {
@@ -99,4 +105,3 @@ export function InspectTool({ defaults }: InspectToolProps) {
     </div>
   )
 }
-

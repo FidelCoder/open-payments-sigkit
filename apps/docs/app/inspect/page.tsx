@@ -1,6 +1,26 @@
 import { InspectTool } from '../../components/inspect-tool'
-import { signedQuoteRequestDefaults } from '../../lib/demo-defaults'
+import {
+  demoExamples,
+  getInspectToolDefaults,
+  resolveDemoExampleName
+} from '../../lib/demo-defaults'
 
-export default function InspectPage() {
-  return <InspectTool defaults={signedQuoteRequestDefaults} />
+type InspectPageProps = {
+  searchParams?: Promise<{
+    example?: string | string[]
+  }>
+}
+
+export default async function InspectPage({ searchParams }: InspectPageProps) {
+  const params = searchParams ? await searchParams : {}
+  const selectedExample = resolveDemoExampleName(params.example, 'custom')
+
+  return (
+    <InspectTool
+      key={selectedExample}
+      defaults={getInspectToolDefaults(selectedExample)}
+      examples={demoExamples}
+      selectedExample={selectedExample}
+    />
+  )
 }
