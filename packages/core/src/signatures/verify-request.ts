@@ -181,15 +181,14 @@ export const verifyRequest = (
       )
     }
 
-    const publicKeyJwk = resolveVerificationKey(parsedSignatureInput.params.keyid, parsedOptions)
+    const keyResolution = resolveVerificationKey(parsedSignatureInput.params.keyid, parsedOptions)
+    const publicKeyJwk = keyResolution.key
 
     if (!publicKeyJwk) {
       return createFailure(
         'KEY_NOT_FOUND',
-        'The verifier could not locate a public key for the signature key ID.',
-        {
-          keyId: parsedSignatureInput.params.keyid
-        },
+        keyResolution.message ?? 'The verifier could not locate a public key for the signature key ID.',
+        keyResolution.details,
         {
           coveredComponents: parsedSignatureInput.components
         }

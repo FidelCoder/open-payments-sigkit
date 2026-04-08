@@ -18,3 +18,42 @@ export const primaryPrivateKeyFixture = readJson<JsonWebKey>('keys/ed25519-priva
 export const primaryPublicKeyFixture = readJson<JsonWebKey>('keys/ed25519-public.jwk.json')
 export const jwksFixture = readJson<{ keys: JsonWebKey[] }>('keys/jwks.json')
 export const secondaryPublicKeyFixture = jwksFixture.keys[1]
+
+export type SignedRequestVector = {
+  contentDigest?: string
+  coveredComponents: string[]
+  request: HttpRequestShape
+  signature: string
+  signatureBase: string
+  signatureInput: string
+}
+
+export type VerificationCaseVector = {
+  expected: {
+    code: string
+    coveredComponents?: string[]
+    details?: Record<string, unknown>
+    message: string
+    ok: boolean
+    signatureBase?: string
+  }
+  name: string
+  request: HttpRequestShape
+  verifyOptions: {
+    keySource: 'jwks' | 'public-key' | 'secondary-public-key-without-kid'
+    preset?: 'grant-request' | 'protected-request' | 'resource-write'
+  }
+}
+
+export const signedGrantRequestVector = readJson<SignedRequestVector>(
+  'vectors/signed/grant-request.json'
+)
+export const signedProtectedQuoteRequestVector = readJson<SignedRequestVector>(
+  'vectors/signed/protected-quote-request.json'
+)
+export const signedResourceWriteIncomingPaymentVector = readJson<SignedRequestVector>(
+  'vectors/signed/resource-write-incoming-payment.json'
+)
+export const verificationCaseVectors = readJson<VerificationCaseVector[]>(
+  'vectors/verification-cases.json'
+)

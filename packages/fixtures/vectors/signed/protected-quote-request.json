@@ -1,0 +1,21 @@
+{
+  "contentDigest": "sha-256=:eHlAvXIHRaXyX5gYNZz/ttg5NWFDd51o3jBzjSdazG0=:",
+  "coveredComponents": ["@method", "@target-uri", "authorization", "content-digest"],
+  "request": {
+    "body": "{\"receiver\":\"https://wallet.example.com/bob\",\"method\":\"ilp\",\"sourceAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"1250\"}}",
+    "headers": {
+      "accept": "application/json",
+      "authorization": "GNAP access_token=\"quote-token\"",
+      "content-type": "application/json",
+      "content-digest": "sha-256=:eHlAvXIHRaXyX5gYNZz/ttg5NWFDd51o3jBzjSdazG0=:",
+      "signature": "sig=:QVeEyi5FnxzDpkaaIgCU0Xg6AO4XJ2D1Zo06zUjIebEpUkoDqw14Y3bqnxm42POErG/7Bo66hLqQLl/2f1CVAw==:",
+      "signature-input": "sig=(\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+    },
+    "method": "POST",
+    "url": "https://rs.example.com/quotes"
+  },
+  "signature": "sig=:QVeEyi5FnxzDpkaaIgCU0Xg6AO4XJ2D1Zo06zUjIebEpUkoDqw14Y3bqnxm42POErG/7Bo66hLqQLl/2f1CVAw==:",
+  "signatureBase": "\"@method\": POST\n\"@target-uri\": https://rs.example.com/quotes\n\"authorization\": GNAP access_token=\"quote-token\"\n\"content-digest\": sha-256=:eHlAvXIHRaXyX5gYNZz/ttg5NWFDd51o3jBzjSdazG0=:\n\"@signature-params\": (\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\"",
+  "signatureInput": "sig=(\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+}
+

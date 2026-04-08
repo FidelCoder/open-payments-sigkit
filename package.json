@@ -1,8 +1,25 @@
 {
   "name": "open-payments-http-signatures-devkit",
   "version": "0.1.0",
+  "description": "Focused developer tooling for Open Payments HTTP Message Signatures, Content-Digest, Ed25519 signing, and verification debugging.",
   "private": true,
   "packageManager": "pnpm@10.24.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FidelCoder/open-payments-sigkit.git"
+  },
+  "homepage": "https://github.com/FidelCoder/open-payments-sigkit",
+  "bugs": {
+    "url": "https://github.com/FidelCoder/open-payments-sigkit/issues"
+  },
+  "keywords": [
+    "open-payments",
+    "http-message-signatures",
+    "rfc9421",
+    "content-digest",
+    "ed25519",
+    "developer-tooling"
+  ],
   "engines": {
     "node": ">=20"
   },
@@ -14,7 +31,8 @@
     "typecheck": "turbo run typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "clean": "turbo run clean"
+    "clean": "turbo run clean",
+    "release:check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

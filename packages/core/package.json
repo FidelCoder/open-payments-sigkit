@@ -5,6 +5,27 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FidelCoder/open-payments-sigkit.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/FidelCoder/open-payments-sigkit/tree/main/packages/core",
+  "bugs": {
+    "url": "https://github.com/FidelCoder/open-payments-sigkit/issues"
+  },
+  "keywords": [
+    "open-payments",
+    "http-message-signatures",
+    "rfc9421",
+    "content-digest",
+    "ed25519",
+    "signature-verification"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -14,6 +35,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
@@ -27,4 +51,3 @@
     "zod": "^3.24.1"
   }
 }
-

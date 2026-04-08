@@ -57,6 +57,7 @@ pnpm test
 pnpm lint
 pnpm dev
 pnpm format
+pnpm release:check
 ```
 
 Useful package-scoped commands:
@@ -106,6 +107,12 @@ console.log(verification)
 ## CLI
 
 The CLI binary name is `op-sig`.
+
+Release-facing notes:
+
+- the CLI is built from [`apps/cli`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/apps/cli)
+- smoke coverage exercises `digest`, `preset`, `sign`, `verify`, and `inspect`
+- `pnpm release:check` runs the full validation path before a push or tag
 
 Example commands:
 
@@ -164,6 +171,7 @@ More detail lives in [docs/presets.md](/home/core/Desktop/devkit/open-payments-h
 - Crypto is isolated under [`packages/core/src/crypto`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/packages/core/src/crypto)
 - Verification returns stable codes and structured details for debugging
 - Tests use deterministic fixtures from [`packages/fixtures`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/packages/fixtures)
+- Publish-facing metadata is defined on the core and fixtures packages for future release work
 
 ## Testing
 
@@ -181,10 +189,12 @@ Core tests cover:
 - Signature-Input serialization and parsing
 - signature base reconstruction
 - Ed25519 sign/verify
+- deterministic signed reference vectors
 - preset behavior
 - header normalization
 - sign/verify integration flows
 - tamper and wrong-key failures
+- fixture-driven verification matrix cases
 - snapshot assertions for signature base and verification payloads
 
 ## Additional Documentation

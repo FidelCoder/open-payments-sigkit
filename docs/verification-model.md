@@ -48,3 +48,32 @@ The toolkit emphasizes failure explanations that are actionable:
 
 This makes the toolkit useful for local debugging, SDK generation workflows, and future conformance testing.
 
+## Reference Vectors
+
+The fixture package now includes deterministic reference vectors under [`packages/fixtures/vectors`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/packages/fixtures/vectors):
+
+- signed grant-request output
+- signed protected quote-request output
+- signed resource-write incoming-payment output
+- a verification matrix covering success and common failure modes
+
+These vectors are consumed by the core conformance tests and are intended to be stable reference data for future CLI, docs, SDK-generation, and interoperability work.
+
+## Verification Matrix
+
+The current matrix includes:
+
+- happy-path grant, protected, and resource-write verification
+- missing `content-digest`
+- missing `signature`
+- missing `signature-input`
+- malformed `Signature-Input`
+- signature label mismatch
+- missing covered `authorization`
+- unknown `keyid` in JWKS
+- unsupported `alg`
+- missing required covered component
+- wrong public key
+- multi-key JWKS without `keyid`
+
+The matrix lives in [`packages/fixtures/vectors/verification-cases.json`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/packages/fixtures/vectors/verification-cases.json).

@@ -48,6 +48,8 @@ The docs app is a server-backed Next.js App Router interface. Route handlers cal
 
 Fixtures provide stable request payloads and Ed25519 JWK material for tests, examples, demos, and reproducible debugging.
 
+The fixture package now also carries deterministic signed vectors and a verification-case matrix so higher-level tools can validate against the same canonical Open Payments examples.
+
 ## `packages/examples`
 
 Examples are runnable scripts that demonstrate how the library behaves in common Open Payments scenarios.
@@ -68,4 +70,3 @@ Examples are runnable scripts that demonstrate how the library behaves in common
 - Additional algorithms can be added by extending `crypto/` without rewriting request parsing or preset logic.
 - More Open Payments request profiles can be added as new preset definitions.
 - Conformance and fixture expansions can grow independently of the core cryptographic flow.
-

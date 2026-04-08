@@ -1,16 +1,43 @@
 {
   "name": "@open-payments-devkit/cli",
   "version": "0.1.0",
+  "description": "Thin CLI wrapper for signing, verifying, inspecting, and debugging Open Payments HTTP Message Signatures.",
   "private": true,
   "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FidelCoder/open-payments-sigkit.git",
+    "directory": "apps/cli"
+  },
+  "homepage": "https://github.com/FidelCoder/open-payments-sigkit/tree/main/apps/cli",
+  "bugs": {
+    "url": "https://github.com/FidelCoder/open-payments-sigkit/issues"
+  },
+  "keywords": [
+    "open-payments",
+    "cli",
+    "http-message-signatures",
+    "rfc9421",
+    "ed25519"
+  ],
   "bin": {
     "op-sig": "dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
     "dev": "tsc -p tsconfig.json --watch",
     "lint": "eslint src --ext .ts",
+    "test": "pnpm build && vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -19,4 +46,3 @@
     "commander": "^13.0.0"
   }
 }
-

@@ -1,0 +1,20 @@
+{
+  "contentDigest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+  "coveredComponents": ["@method", "@target-uri", "content-digest"],
+  "request": {
+    "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+    "headers": {
+      "accept": "application/json",
+      "content-type": "application/json",
+      "content-digest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+      "signature": "sig=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:",
+      "signature-input": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+    },
+    "method": "POST",
+    "url": "https://auth.example.com/grants"
+  },
+  "signature": "sig=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:",
+  "signatureBase": "\"@method\": POST\n\"@target-uri\": https://auth.example.com/grants\n\"content-digest\": sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:\n\"@signature-params\": (\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\"",
+  "signatureInput": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+}
+

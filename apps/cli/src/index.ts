@@ -72,7 +72,13 @@ program
   .option('--json', 'Print JSON output')
   .action(async (options) => {
     const privateKeyJwk = await readJsonFile<JsonWebKey>(options.keyFile)
-    const request = await buildRequestFromOptions(options)
+    const request = await buildRequestFromOptions({
+      body: options.body,
+      bodyFile: options.bodyFile,
+      headers: options.header,
+      method: options.method,
+      url: options.url
+    })
     const result = signRequest(request, {
       components: options.component.length > 0 ? options.component : undefined,
       created: options.created,

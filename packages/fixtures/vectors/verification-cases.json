@@ -1,0 +1,384 @@
+[
+  {
+    "name": "grant-request-success",
+    "request": {
+      "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+        "signature": "sig=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://auth.example.com/grants"
+    },
+    "verifyOptions": {
+      "keySource": "jwks",
+      "preset": "grant-request"
+    },
+    "expected": {
+      "code": "OK",
+      "coveredComponents": ["@method", "@target-uri", "content-digest"],
+      "message": "The request signature and covered components verified successfully.",
+      "ok": true,
+      "signatureBase": "\"@method\": POST\n\"@target-uri\": https://auth.example.com/grants\n\"content-digest\": sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:\n\"@signature-params\": (\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+    }
+  },
+  {
+    "name": "protected-request-success",
+    "request": {
+      "body": "{\"receiver\":\"https://wallet.example.com/bob\",\"method\":\"ilp\",\"sourceAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"1250\"}}",
+      "headers": {
+        "accept": "application/json",
+        "authorization": "GNAP access_token=\"quote-token\"",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:eHlAvXIHRaXyX5gYNZz/ttg5NWFDd51o3jBzjSdazG0=:",
+        "signature": "sig=:QVeEyi5FnxzDpkaaIgCU0Xg6AO4XJ2D1Zo06zUjIebEpUkoDqw14Y3bqnxm42POErG/7Bo66hLqQLl/2f1CVAw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://rs.example.com/quotes"
+    },
+    "verifyOptions": {
+      "keySource": "jwks",
+      "preset": "protected-request"
+    },
+    "expected": {
+      "code": "OK",
+      "coveredComponents": ["@method", "@target-uri", "authorization", "content-digest"],
+      "message": "The request signature and covered components verified successfully.",
+      "ok": true,
+      "signatureBase": "\"@method\": POST\n\"@target-uri\": https://rs.example.com/quotes\n\"authorization\": GNAP access_token=\"quote-token\"\n\"content-digest\": sha-256=:eHlAvXIHRaXyX5gYNZz/ttg5NWFDd51o3jBzjSdazG0=:\n\"@signature-params\": (\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+    }
+  },
+  {
+    "name": "resource-write-success",
+    "request": {
+      "body": "{\"walletAddress\":\"https://wallet.example.com/alice\",\"incomingAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"2500\"},\"expiresAt\":\"2026-12-31T23:59:59.000Z\"}",
+      "headers": {
+        "accept": "application/json",
+        "authorization": "GNAP access_token=\"incoming-token\"",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:k2PwYZ8wFst/2yGspK44oEmsW7OaD6qsUBrLLMrwwxg=:",
+        "signature": "sig=:ilLXBKPH8NK8Q1gN08q8AfSgFG5y4M/mM02hqJY7HbwPgeDDQ9U3kggOnxI/q62SVh/bdBTzh+5byjSDP3j8CQ==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;expires=1735689900;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://rs.example.com/incoming-payments"
+    },
+    "verifyOptions": {
+      "keySource": "jwks",
+      "preset": "resource-write"
+    },
+    "expected": {
+      "code": "OK",
+      "coveredComponents": ["@method", "@target-uri", "authorization", "content-digest"],
+      "message": "The request signature and covered components verified successfully.",
+      "ok": true,
+      "signatureBase": "\"@method\": POST\n\"@target-uri\": https://rs.example.com/incoming-payments\n\"authorization\": GNAP access_token=\"incoming-token\"\n\"content-digest\": sha-256=:k2PwYZ8wFst/2yGspK44oEmsW7OaD6qsUBrLLMrwwxg=:\n\"@signature-params\": (\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;expires=1735689900;keyid=\"fixture-primary-key\""
+    }
+  },
+  {
+    "name": "missing-content-digest",
+    "request": {
+      "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "signature": "sig=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://auth.example.com/grants"
+    },
+    "verifyOptions": {
+      "keySource": "public-key",
+      "preset": "grant-request"
+    },
+    "expected": {
+      "code": "MISSING_CONTENT_DIGEST",
+      "details": {
+        "header": "content-digest"
+      },
+      "message": "The request body is present but the Content-Digest header is missing.",
+      "ok": false
+    }
+  },
+  {
+    "name": "missing-signature-header",
+    "request": {
+      "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://auth.example.com/grants"
+    },
+    "verifyOptions": {
+      "keySource": "public-key",
+      "preset": "grant-request"
+    },
+    "expected": {
+      "code": "MISSING_SIGNATURE",
+      "message": "The Signature header is missing from the request.",
+      "ok": false
+    }
+  },
+  {
+    "name": "missing-signature-input-header",
+    "request": {
+      "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+        "signature": "sig=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:"
+      },
+      "method": "POST",
+      "url": "https://auth.example.com/grants"
+    },
+    "verifyOptions": {
+      "keySource": "public-key",
+      "preset": "grant-request"
+    },
+    "expected": {
+      "code": "MISSING_SIGNATURE_INPUT",
+      "message": "The Signature-Input header is missing from the request.",
+      "ok": false
+    }
+  },
+  {
+    "name": "malformed-signature-input",
+    "request": {
+      "body": "{\"receiver\":\"https://wallet.example.com/bob\",\"method\":\"ilp\",\"sourceAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"1250\"}}",
+      "headers": {
+        "accept": "application/json",
+        "authorization": "GNAP access_token=\"quote-token\"",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:eHlAvXIHRaXyX5gYNZz/ttg5NWFDd51o3jBzjSdazG0=:",
+        "signature": "sig=:QVeEyi5FnxzDpkaaIgCU0Xg6AO4XJ2D1Zo06zUjIebEpUkoDqw14Y3bqnxm42POErG/7Bo66hLqQLl/2f1CVAw==:",
+        "signature-input": "sig=(\"@method\";created=oops"
+      },
+      "method": "POST",
+      "url": "https://rs.example.com/quotes"
+    },
+    "verifyOptions": {
+      "keySource": "public-key",
+      "preset": "protected-request"
+    },
+    "expected": {
+      "code": "INVALID_SIGNATURE_INPUT",
+      "message": "Signature-Input member \"sig\" has an unterminated inner list.",
+      "ok": false
+    }
+  },
+  {
+    "name": "signature-label-mismatch",
+    "request": {
+      "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+        "signature": "other=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://auth.example.com/grants"
+    },
+    "verifyOptions": {
+      "keySource": "public-key",
+      "preset": "grant-request"
+    },
+    "expected": {
+      "code": "MISSING_SIGNATURE",
+      "details": {
+        "signatureInputLabels": ["sig"],
+        "signatureLabels": ["other"]
+      },
+      "message": "The Signature and Signature-Input headers did not contain a matching label.",
+      "ok": false
+    }
+  },
+  {
+    "name": "missing-authorization-header",
+    "request": {
+      "body": "{\"receiver\":\"https://wallet.example.com/bob\",\"method\":\"ilp\",\"sourceAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"1250\"}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:eHlAvXIHRaXyX5gYNZz/ttg5NWFDd51o3jBzjSdazG0=:",
+        "signature": "sig=:QVeEyi5FnxzDpkaaIgCU0Xg6AO4XJ2D1Zo06zUjIebEpUkoDqw14Y3bqnxm42POErG/7Bo66hLqQLl/2f1CVAw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://rs.example.com/quotes"
+    },
+    "verifyOptions": {
+      "keySource": "public-key",
+      "preset": "protected-request"
+    },
+    "expected": {
+      "code": "REQUEST_COMPONENT_MISMATCH",
+      "details": {
+        "component": "authorization"
+      },
+      "message": "The request did not include the covered component \"authorization\".",
+      "ok": false
+    }
+  },
+  {
+    "name": "unknown-keyid",
+    "request": {
+      "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+        "signature": "sig=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"unknown-key\""
+      },
+      "method": "POST",
+      "url": "https://auth.example.com/grants"
+    },
+    "verifyOptions": {
+      "keySource": "jwks",
+      "preset": "grant-request"
+    },
+    "expected": {
+      "code": "KEY_NOT_FOUND",
+      "details": {
+        "availableKeyIds": ["fixture-primary-key", "fixture-secondary-key"],
+        "jwksKeyCount": 2,
+        "keyId": "unknown-key",
+        "reason": "keyid-not-found-in-jwks",
+        "source": "jwks"
+      },
+      "message": "The verifier could not find the signature key ID in the supplied JWKS.",
+      "ok": false,
+      "coveredComponents": ["@method", "@target-uri", "content-digest"]
+    }
+  },
+  {
+    "name": "unsupported-algorithm",
+    "request": {
+      "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+        "signature": "sig=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;alg=rsa-v1;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://auth.example.com/grants"
+    },
+    "verifyOptions": {
+      "keySource": "public-key",
+      "preset": "grant-request"
+    },
+    "expected": {
+      "code": "UNSUPPORTED_ALGORITHM",
+      "details": {
+        "alg": "rsa-v1"
+      },
+      "message": "The Signature-Input alg parameter \"rsa-v1\" is not supported.",
+      "ok": false,
+      "coveredComponents": ["@method", "@target-uri", "content-digest"]
+    }
+  },
+  {
+    "name": "missing-required-authorization-coverage",
+    "request": {
+      "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+        "signature": "sig=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://auth.example.com/grants"
+    },
+    "verifyOptions": {
+      "keySource": "public-key",
+      "preset": "protected-request"
+    },
+    "expected": {
+      "code": "MISSING_REQUIRED_COMPONENT",
+      "details": {
+        "missingComponents": ["authorization"]
+      },
+      "message": "The signature did not cover the components required by the verification policy.",
+      "ok": false,
+      "coveredComponents": ["@method", "@target-uri", "content-digest"]
+    }
+  },
+  {
+    "name": "wrong-public-key",
+    "request": {
+      "body": "{\"receiver\":\"https://wallet.example.com/bob\",\"method\":\"ilp\",\"sourceAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"1250\"}}",
+      "headers": {
+        "accept": "application/json",
+        "authorization": "GNAP access_token=\"quote-token\"",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:eHlAvXIHRaXyX5gYNZz/ttg5NWFDd51o3jBzjSdazG0=:",
+        "signature": "sig=:QVeEyi5FnxzDpkaaIgCU0Xg6AO4XJ2D1Zo06zUjIebEpUkoDqw14Y3bqnxm42POErG/7Bo66hLqQLl/2f1CVAw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+      },
+      "method": "POST",
+      "url": "https://rs.example.com/quotes"
+    },
+    "verifyOptions": {
+      "keySource": "secondary-public-key-without-kid",
+      "preset": "protected-request"
+    },
+    "expected": {
+      "code": "SIGNATURE_MISMATCH",
+      "details": {
+        "keyId": "fixture-primary-key",
+        "label": "sig"
+      },
+      "message": "The signature did not match the reconstructed signature base.",
+      "ok": false,
+      "coveredComponents": ["@method", "@target-uri", "authorization", "content-digest"],
+      "signatureBase": "\"@method\": POST\n\"@target-uri\": https://rs.example.com/quotes\n\"authorization\": GNAP access_token=\"quote-token\"\n\"content-digest\": sha-256=:eHlAvXIHRaXyX5gYNZz/ttg5NWFDd51o3jBzjSdazG0=:\n\"@signature-params\": (\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;keyid=\"fixture-primary-key\""
+    }
+  },
+  {
+    "name": "multi-key-jwks-without-keyid",
+    "request": {
+      "body": "{\"client\":\"https://wallet.example.com/alice\",\"access_token\":{\"access\":[{\"type\":\"incoming-payment\",\"actions\":[\"create\",\"read\"]}]}}",
+      "headers": {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "content-digest": "sha-256=:v+MxjrqbRkFX2vELAWegNTtjnQGThUX/7W6NpBbpuK8=:",
+        "signature": "sig=:Ax2u3OfYRrskox7YLYQEKTUiLP2wMonQaM/Pne9yeKSsDcFJPaFdIUuPZiI+UwQ1q6+JOWqv9Syo6RYFvdZuCw==:",
+        "signature-input": "sig=(\"@method\" \"@target-uri\" \"content-digest\");created=1735689600"
+      },
+      "method": "POST",
+      "url": "https://auth.example.com/grants"
+    },
+    "verifyOptions": {
+      "keySource": "jwks",
+      "preset": "grant-request"
+    },
+    "expected": {
+      "code": "KEY_NOT_FOUND",
+      "details": {
+        "availableKeyIds": ["fixture-primary-key", "fixture-secondary-key"],
+        "jwksKeyCount": 2,
+        "reason": "missing-keyid-for-multi-key-jwks",
+        "source": "jwks"
+      },
+      "message": "The signature key ID was missing, and the supplied JWKS contains multiple candidate keys.",
+      "ok": false,
+      "coveredComponents": ["@method", "@target-uri", "content-digest"]
+    }
+  }
+]

@@ -49,6 +49,7 @@ export const writeMaybe = async (path: string | undefined, data: string): Promis
 export const buildRequestFromOptions = async (options: {
   body?: string
   bodyFile?: string
+  header?: string[]
   headers?: string[]
   method: string
   url: string
@@ -57,7 +58,7 @@ export const buildRequestFromOptions = async (options: {
 
   return {
     ...(body ? { body } : {}),
-    headers: parseHeaderList(options.headers),
+    headers: parseHeaderList(options.headers ?? options.header),
     method: options.method,
     url: options.url
   }

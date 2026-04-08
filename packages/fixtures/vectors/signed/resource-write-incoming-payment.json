@@ -1,0 +1,21 @@
+{
+  "contentDigest": "sha-256=:k2PwYZ8wFst/2yGspK44oEmsW7OaD6qsUBrLLMrwwxg=:",
+  "coveredComponents": ["@method", "@target-uri", "authorization", "content-digest"],
+  "request": {
+    "body": "{\"walletAddress\":\"https://wallet.example.com/alice\",\"incomingAmount\":{\"assetCode\":\"USD\",\"assetScale\":2,\"value\":\"2500\"},\"expiresAt\":\"2026-12-31T23:59:59.000Z\"}",
+    "headers": {
+      "accept": "application/json",
+      "authorization": "GNAP access_token=\"incoming-token\"",
+      "content-type": "application/json",
+      "content-digest": "sha-256=:k2PwYZ8wFst/2yGspK44oEmsW7OaD6qsUBrLLMrwwxg=:",
+      "signature": "sig=:ilLXBKPH8NK8Q1gN08q8AfSgFG5y4M/mM02hqJY7HbwPgeDDQ9U3kggOnxI/q62SVh/bdBTzh+5byjSDP3j8CQ==:",
+      "signature-input": "sig=(\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;expires=1735689900;keyid=\"fixture-primary-key\""
+    },
+    "method": "POST",
+    "url": "https://rs.example.com/incoming-payments"
+  },
+  "signature": "sig=:ilLXBKPH8NK8Q1gN08q8AfSgFG5y4M/mM02hqJY7HbwPgeDDQ9U3kggOnxI/q62SVh/bdBTzh+5byjSDP3j8CQ==:",
+  "signatureBase": "\"@method\": POST\n\"@target-uri\": https://rs.example.com/incoming-payments\n\"authorization\": GNAP access_token=\"incoming-token\"\n\"content-digest\": sha-256=:k2PwYZ8wFst/2yGspK44oEmsW7OaD6qsUBrLLMrwwxg=:\n\"@signature-params\": (\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;expires=1735689900;keyid=\"fixture-primary-key\"",
+  "signatureInput": "sig=(\"@method\" \"@target-uri\" \"authorization\" \"content-digest\");created=1735689600;expires=1735689900;keyid=\"fixture-primary-key\""
+}
+
