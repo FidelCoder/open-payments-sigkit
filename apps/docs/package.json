@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && next build",
     "clean": "rimraf .next",
-    "dev": "next dev",
+    "dev": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && next dev",
     "lint": "eslint . --ext .ts,.tsx",
     "start": "next start",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && tsc -p tsconfig.json"
   },
   "dependencies": {
     "@open-payments-devkit/core": "workspace:*",

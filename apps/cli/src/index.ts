@@ -11,7 +11,7 @@ import {
 } from '@open-payments-devkit/core'
 import { fixturePaths } from '@open-payments-devkit/fixtures'
 import { Command } from 'commander'
-import { buildRequestFromOptions, collect, readJsonFile, readTextInput } from './io.js'
+import { collect, loadRequestInput, readJsonFile, readTextInput } from './io.js'
 import {
   renderInspection,
   renderPreset,
@@ -56,8 +56,11 @@ program
 program
   .command('sign')
   .description('Sign an HTTP request with Ed25519')
-  .requiredOption('--method <method>', 'HTTP method')
-  .requiredOption('--url <url>', 'Request URL')
+  .option('--method <method>', 'HTTP method')
+  .option('--url <url>', 'Request URL')
+  .option('--request-file <path>', 'Path to an unsigned request JSON file')
+  .option('--raw-request-file <path>', 'Path to a raw HTTP request file')
+  .option('--default-scheme <scheme>', 'Default scheme for raw HTTP request files', 'https')
   .requiredOption('--key-file <path>', 'Path to a private JWK file')
   .requiredOption('--key-id <keyId>', 'Key ID to place in Signature-Input')
   .option('--header <header>', 'Header formatted as "Name: value"', collect, [])
@@ -72,11 +75,14 @@ program
   .option('--json', 'Print JSON output')
   .action(async (options) => {
     const privateKeyJwk = await readJsonFile<JsonWebKey>(options.keyFile)
-    const request = await buildRequestFromOptions({
+    const request = await loadRequestInput({
       body: options.body,
       bodyFile: options.bodyFile,
+      defaultScheme: options.defaultScheme,
       headers: options.header,
       method: options.method,
+      rawRequestFile: options.rawRequestFile,
+      requestFile: options.requestFile,
       url: options.url
     })
     const result = signRequest(request, {
@@ -96,7 +102,9 @@ program
 program
   .command('verify')
   .description('Verify a signed request against a public key or JWKS')
-  .requiredOption('--request-file <path>', 'Path to a signed request JSON file')
+  .option('--request-file <path>', 'Path to a signed request JSON file')
+  .option('--raw-request-file <path>', 'Path to a signed raw HTTP request file')
+  .option('--default-scheme <scheme>', 'Default scheme for raw HTTP request files', 'https')
   .option('--public-key-file <path>', 'Path to a public JWK file')
   .option('--jwks-file <path>', 'Path to a JWKS file')
   .option('--preset <preset>', 'Open Payments preset')
@@ -104,7 +112,11 @@ program
   .option('--require-digest-for-body', 'Require Content-Digest whenever a body exists')
   .option('--json', 'Print JSON output')
   .action(async (options) => {
-    const request = await readJsonFile(options.requestFile)
+    const request = await loadRequestInput({
+      defaultScheme: options.defaultScheme,
+      rawRequestFile: options.rawRequestFile,
+      requestFile: options.requestFile
+    })
     const publicKeyJwk = options.publicKeyFile
       ? await readJsonFile<JsonWebKey>(options.publicKeyFile)
       : undefined
@@ -130,10 +142,16 @@ program
 program
   .command('inspect')
   .description('Inspect canonicalized signature inputs and the signature base')
-  .requiredOption('--request-file <path>', 'Path to a signed request JSON file')
+  .option('--request-file <path>', 'Path to a signed request JSON file')
+  .option('--raw-request-file <path>', 'Path to a signed raw HTTP request file')
+  .option('--default-scheme <scheme>', 'Default scheme for raw HTTP request files', 'https')
   .option('--json', 'Print JSON output')
   .action(async (options) => {
-    const request = await readJsonFile(options.requestFile)
+    const request = await loadRequestInput({
+      defaultScheme: options.defaultScheme,
+      rawRequestFile: options.rawRequestFile,
+      requestFile: options.requestFile
+    })
     const inspection = inspectRequestSignature(request)
 
     print(options.json ? inspection : renderInspection(inspection), options.json)

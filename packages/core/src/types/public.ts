@@ -16,6 +16,13 @@ export type HttpRequestShape = {
 }
 
 /**
+ * Options for parsing a captured raw HTTP request into the shared request shape.
+ */
+export type RawHttpRequestParseOptions = {
+  defaultScheme?: string
+}
+
+/**
  * Options for signing an HTTP request.
  */
 export type SignRequestOptions = {

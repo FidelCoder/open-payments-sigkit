@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import type { SignedRequestResult } from '@open-payments-devkit/core'
 import { ExampleSwitcher } from './example-switcher'
-import { RequestEditor } from './request-editor'
+import { RequestEditor, type RequestInputFormat } from './request-editor'
 import { ResultCard } from './result-card'
 import type { DemoExample, DemoSelectionName, DocsPresetMode } from '../lib/demo-defaults'
 
@@ -35,6 +35,11 @@ export function SignTool({
   const [url, setUrl] = useState(defaults.url)
   const [headersText, setHeadersText] = useState(defaults.headersText)
   const [body, setBody] = useState(defaults.body)
+  const [inputFormat, setInputFormat] = useState<RequestInputFormat>(
+    selectedExample === 'custom' ? 'raw' : 'structured'
+  )
+  const [rawRequestText, setRawRequestText] = useState('')
+  const [requestScheme, setRequestScheme] = useState('https')
   const [preset, setPreset] = useState<DocsPresetMode>(initialPreset)
   const [keyIdValue, setKeyIdValue] = useState(keyId)
   const [privateKeyText, setPrivateKeyText] = useState(privateKeyJwkText)
@@ -63,11 +68,14 @@ export function SignTool({
                 created,
                 expires,
                 headersText,
+                inputFormat,
                 keyId: keyIdValue,
                 method,
                 nonce,
                 preset: preset === 'custom' ? '' : preset,
                 privateKeyJwkText: privateKeyText,
+                rawRequestText,
+                requestScheme,
                 tag,
                 url
               }),
@@ -107,11 +115,17 @@ export function SignTool({
           body={body}
           headersText={headersText}
           idPrefix="sign"
+          inputFormat={inputFormat}
           method={method}
           onBodyChange={setBody}
           onHeadersTextChange={setHeadersText}
+          onInputFormatChange={setInputFormat}
           onMethodChange={setMethod}
+          onRawRequestTextChange={setRawRequestText}
+          onRequestSchemeChange={setRequestScheme}
           onUrlChange={setUrl}
+          rawRequestText={rawRequestText}
+          requestScheme={requestScheme}
           url={url}
         />
 

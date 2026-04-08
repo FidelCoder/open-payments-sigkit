@@ -59,6 +59,22 @@ The fixture package now includes deterministic reference vectors under [`package
 
 These vectors are consumed by the core conformance tests and are intended to be stable reference data for future CLI, docs, SDK-generation, and interoperability work.
 
+## Captured Request Workflow
+
+The verification pipeline can now start from either:
+
+- the shared `HttpRequestShape` JSON model
+- a captured raw HTTP request string parsed with `parseRawHttpRequest`
+
+This makes it practical to validate real Open Payments traffic copied from:
+
+- reverse-proxy logs
+- HTTP debugging tools
+- saved `.http` request files
+- SDK integration traces
+
+For origin-form request lines such as `POST /quotes HTTP/1.1`, the parser resolves the final request URL from `Host` and defaults to `https` unless a different scheme is supplied explicitly.
+
 ## Verification Matrix
 
 The current matrix includes:

@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import type { VerificationExplanation, VerificationResult } from '@open-payments-devkit/core'
 import { ExampleSwitcher } from './example-switcher'
-import { RequestEditor } from './request-editor'
+import { RequestEditor, type RequestInputFormat } from './request-editor'
 import { ResultCard } from './result-card'
 import type { DemoExample, DemoSelectionName, DocsPresetMode } from '../lib/demo-defaults'
 
@@ -35,6 +35,11 @@ export function VerifyTool({
   const [url, setUrl] = useState(defaults.url)
   const [headersText, setHeadersText] = useState(defaults.headersText)
   const [body, setBody] = useState(defaults.body)
+  const [inputFormat, setInputFormat] = useState<RequestInputFormat>(
+    selectedExample === 'custom' ? 'raw' : 'structured'
+  )
+  const [rawRequestText, setRawRequestText] = useState('')
+  const [requestScheme, setRequestScheme] = useState('https')
   const [preset, setPreset] = useState<DocsPresetMode>(initialPreset)
   const [publicKeyText, setPublicKeyText] = useState(publicKeyJwkText)
   const [jwksValue, setJwksValue] = useState(jwksText)
@@ -58,12 +63,15 @@ export function VerifyTool({
               body: JSON.stringify({
                 body,
                 headersText,
+                inputFormat,
                 jwksText: jwksValue,
                 method,
                 preset: preset === 'custom' ? '' : preset,
                 publicKeyJwkText: publicKeyText,
+                rawRequestText,
                 requireDigestForBody,
                 requiredComponentsText,
+                requestScheme,
                 url
               }),
               headers: {
@@ -106,11 +114,17 @@ export function VerifyTool({
           body={body}
           headersText={headersText}
           idPrefix="verify"
+          inputFormat={inputFormat}
           method={method}
           onBodyChange={setBody}
           onHeadersTextChange={setHeadersText}
+          onInputFormatChange={setInputFormat}
           onMethodChange={setMethod}
+          onRawRequestTextChange={setRawRequestText}
+          onRequestSchemeChange={setRequestScheme}
           onUrlChange={setUrl}
+          rawRequestText={rawRequestText}
+          requestScheme={requestScheme}
           url={url}
         />
 

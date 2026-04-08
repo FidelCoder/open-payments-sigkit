@@ -2,6 +2,8 @@
 
 `open-payments-http-signatures-devkit` is a focused TypeScript monorepo for building, signing, verifying, and inspecting Open Payments HTTP Message Signatures. It is designed as a clean foundation for serious developer tooling around RFC 9421, Ed25519 client keys, Content-Digest handling, Open Payments presets, and verification debugging.
 
+It now supports both normalized JSON request input and captured raw HTTP request input so developers can validate real Open Payments traffic without manually reshaping it first.
+
 ## What It Is
 
 - A strict TypeScript core library for Content-Digest, Signature-Input, signing, verification, parsing, and inspection
@@ -100,6 +102,7 @@ console.log(verification)
 - `inspectRequestSignature(request)`
 - `parseSignatureInput(headerValue)`
 - `parseSignature(headerValue)`
+- `parseRawHttpRequest(rawRequest, options?)`
 - `buildSignatureBase(request, parsedSignatureInput)`
 - `explainVerificationResult(result)`
 - `getPreset(name)`
@@ -141,6 +144,27 @@ node apps/cli/dist/index.js verify \
   --preset protected-request
 ```
 
+To work from captured traffic directly:
+
+```bash
+node apps/cli/dist/index.js verify \
+  --raw-request-file ./captured-request.http \
+  --jwks-file ./client-keys.jwks.json \
+  --preset protected-request \
+  --default-scheme https
+```
+
+You can also sign a captured unsigned request file:
+
+```bash
+node apps/cli/dist/index.js sign \
+  --raw-request-file ./unsigned-request.http \
+  --key-file ./client-private-key.jwk.json \
+  --key-id live-client-key \
+  --preset protected-request \
+  --json
+```
+
 ## Docs App
 
 The docs app lives in [`apps/docs`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/apps/docs) and provides:
@@ -156,6 +180,8 @@ Start it with:
 ```bash
 pnpm --filter @open-payments-devkit/docs dev
 ```
+
+Each tool route supports both structured form fields and pasted raw HTTP requests, so you can inspect or verify captured Open Payments traffic directly.
 
 ## Presets
 
@@ -197,6 +223,16 @@ Core tests cover:
 - tamper and wrong-key failures
 - fixture-driven verification matrix cases
 - snapshot assertions for signature base and verification payloads
+- captured raw HTTP request parsing and validation paths
+
+## Interoperability Workflow
+
+For real Open Payments traffic, the recommended local loop is:
+
+1. Capture an outgoing request as raw HTTP or normalize it into the shared request JSON shape.
+2. Run `op-sig verify` with a real public JWK or client-key JWKS.
+3. Inspect the returned `signatureBase`, `coveredComponents`, and typed failure `code`.
+4. If needed, use `/inspect` in the docs app to compare canonicalized components line-by-line.
 
 ## Additional Documentation
 

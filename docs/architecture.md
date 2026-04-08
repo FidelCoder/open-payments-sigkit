@@ -15,6 +15,7 @@
 The core package owns:
 
 - request normalization
+- raw captured HTTP request parsing
 - Content-Digest creation and validation
 - structured field parsing for `Signature` and `Signature-Input`
 - canonical signature base reconstruction
@@ -40,9 +41,16 @@ Internal source layout:
 
 The CLI is intentionally thin. It parses terminal input, reads files, formats terminal output, and delegates all signing and verification logic to `@open-payments-devkit/core`.
 
+It now accepts both normalized JSON request files and raw captured HTTP request files for sign, verify, and inspect flows.
+
 ## `apps/docs`
 
 The docs app is a server-backed Next.js App Router interface. Route handlers call the core library directly so the browser UI reflects the same behavior as the CLI and programmatic API.
+
+The request editor supports two modes:
+
+- structured request fields for deliberate request construction
+- raw HTTP request input for validating captured Open Payments traffic directly
 
 ## `packages/fixtures`
 

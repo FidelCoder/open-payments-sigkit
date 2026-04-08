@@ -1,5 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises'
-import type { HttpRequestShape } from '@open-payments-devkit/core'
+import { parseRawHttpRequest, type HttpRequestShape } from '@open-payments-devkit/core'
 
 export const collect = (value: string, previous: string[] = []): string[] => [...previous, value]
 
@@ -62,4 +62,72 @@ export const buildRequestFromOptions = async (options: {
     method: options.method,
     url: options.url
   }
+}
+
+const assertSingleRequestSource = (sources: string[]): void => {
+  if (sources.length > 1) {
+    throw new Error(
+      `Choose one request source: ${sources.join(', ')}. Inline fields, --request-file, and --raw-request-file are mutually exclusive.`
+    )
+  }
+}
+
+export const loadRequestInput = async (options: {
+  body?: string
+  bodyFile?: string
+  defaultScheme?: string
+  header?: string[]
+  headers?: string[]
+  method?: string
+  rawRequestFile?: string
+  requestFile?: string
+  url?: string
+}): Promise<HttpRequestShape> => {
+  const sources: string[] = []
+  const hasInlineRequest =
+    Boolean(options.method?.trim()) ||
+    Boolean(options.url?.trim()) ||
+    Boolean(options.body) ||
+    Boolean(options.bodyFile) ||
+    Boolean(options.headers?.length) ||
+    Boolean(options.header?.length)
+
+  if (hasInlineRequest) {
+    sources.push('inline fields')
+  }
+
+  if (options.requestFile) {
+    sources.push('--request-file')
+  }
+
+  if (options.rawRequestFile) {
+    sources.push('--raw-request-file')
+  }
+
+  assertSingleRequestSource(sources)
+
+  if (options.requestFile) {
+    return readJsonFile<HttpRequestShape>(options.requestFile)
+  }
+
+  if (options.rawRequestFile) {
+    const rawRequest = await readFile(options.rawRequestFile, 'utf8')
+    return parseRawHttpRequest(rawRequest, {
+      defaultScheme: options.defaultScheme
+    })
+  }
+
+  if (!options.method?.trim() || !options.url?.trim()) {
+    throw new Error(
+      'Provide either inline request fields (--method and --url), --request-file, or --raw-request-file.'
+    )
+  }
+
+  return buildRequestFromOptions({
+    body: options.body,
+    bodyFile: options.bodyFile,
+    headers: options.headers ?? options.header,
+    method: options.method,
+    url: options.url
+  })
 }

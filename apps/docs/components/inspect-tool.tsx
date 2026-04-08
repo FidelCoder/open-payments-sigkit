@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import type { InspectionResult } from '@open-payments-devkit/core'
 import { ExampleSwitcher } from './example-switcher'
-import { RequestEditor } from './request-editor'
+import { RequestEditor, type RequestInputFormat } from './request-editor'
 import { ResultCard } from './result-card'
 import type { DemoExample, DemoSelectionName } from '../lib/demo-defaults'
 
@@ -23,6 +23,11 @@ export function InspectTool({ defaults, examples, selectedExample }: InspectTool
   const [url, setUrl] = useState(defaults.url)
   const [headersText, setHeadersText] = useState(defaults.headersText)
   const [body, setBody] = useState(defaults.body)
+  const [inputFormat, setInputFormat] = useState<RequestInputFormat>(
+    selectedExample === 'custom' ? 'raw' : 'structured'
+  )
+  const [rawRequestText, setRawRequestText] = useState('')
+  const [requestScheme, setRequestScheme] = useState('https')
   const [result, setResult] = useState<InspectionResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -40,7 +45,10 @@ export function InspectTool({ defaults, examples, selectedExample }: InspectTool
               body: JSON.stringify({
                 body,
                 headersText,
+                inputFormat,
                 method,
+                rawRequestText,
+                requestScheme,
                 url
               }),
               headers: {
@@ -81,11 +89,17 @@ export function InspectTool({ defaults, examples, selectedExample }: InspectTool
           body={body}
           headersText={headersText}
           idPrefix="inspect"
+          inputFormat={inputFormat}
           method={method}
           onBodyChange={setBody}
           onHeadersTextChange={setHeadersText}
+          onInputFormatChange={setInputFormat}
           onMethodChange={setMethod}
+          onRawRequestTextChange={setRawRequestText}
+          onRequestSchemeChange={setRequestScheme}
           onUrlChange={setUrl}
+          rawRequestText={rawRequestText}
+          requestScheme={requestScheme}
           url={url}
         />
       </form>

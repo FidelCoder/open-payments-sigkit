@@ -1,4 +1,4 @@
-import type { HttpRequestShape } from '@open-payments-devkit/core'
+import { parseRawHttpRequest, type HttpRequestShape } from '@open-payments-devkit/core'
 
 export const parseHeadersText = (value: string): Record<string, string> => {
   const headers: Record<string, string> = {}
@@ -52,3 +52,26 @@ export const optionalString = (value: string): string | undefined => {
   return trimmed ? trimmed : undefined
 }
 
+export const buildRequestFromFormInput = (input: {
+  body?: string
+  headersText?: string
+  method?: string
+  rawRequestText?: string
+  requestScheme?: string
+  url?: string
+}): HttpRequestShape => {
+  const rawRequestText = optionalString(input.rawRequestText ?? '')
+
+  if (rawRequestText) {
+    return parseRawHttpRequest(rawRequestText, {
+      defaultScheme: optionalString(input.requestScheme ?? '') ?? 'https'
+    })
+  }
+
+  return {
+    ...(input.body ? { body: input.body } : {}),
+    headers: parseHeadersText(input.headersText ?? ''),
+    method: input.method ?? '',
+    url: input.url ?? ''
+  }
+}
