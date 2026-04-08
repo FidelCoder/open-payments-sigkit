@@ -25,6 +25,7 @@ export type DemoExample = {
   label: string
   description: string
   preset: PresetName
+  requestType: string
   request: HttpRequestShape
 }
 
@@ -48,6 +49,7 @@ export const demoExamples: DemoExample[] = [
     label: 'Grant request',
     name: 'grant-request',
     preset: 'grant-request',
+    requestType: 'grant creation',
     request: requests.grantRequest as HttpRequestShape
   },
   {
@@ -55,6 +57,7 @@ export const demoExamples: DemoExample[] = [
     label: 'Quote request',
     name: 'quote-request',
     preset: 'protected-request',
+    requestType: 'quote request',
     request: requests.quoteRequest as HttpRequestShape
   },
   {
@@ -62,6 +65,7 @@ export const demoExamples: DemoExample[] = [
     label: 'Incoming payment',
     name: 'incoming-payment',
     preset: 'resource-write',
+    requestType: 'incoming payment',
     request: requests.incomingPayment as HttpRequestShape
   },
   {
@@ -69,6 +73,7 @@ export const demoExamples: DemoExample[] = [
     label: 'Outgoing payment',
     name: 'outgoing-payment',
     preset: 'resource-write',
+    requestType: 'outgoing payment',
     request: requests.outgoingPayment as HttpRequestShape
   }
 ]

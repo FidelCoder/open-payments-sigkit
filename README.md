@@ -1,25 +1,63 @@
 # open-payments-http-signatures-devkit
 
-`open-payments-http-signatures-devkit` is a focused TypeScript monorepo for building, signing, verifying, and inspecting Open Payments HTTP Message Signatures. It is designed as a clean foundation for serious developer tooling around RFC 9421, Ed25519 client keys, Content-Digest handling, Open Payments presets, and verification debugging.
+`open-payments-http-signatures-devkit` is a focused TypeScript monorepo for Open Payments HTTP Message Signatures. It helps developers sign requests, verify them, inspect the canonical signature base, debug failures, and work with Open Payments-specific request presets without having to stitch together generic RFC 9421 tooling by hand.
 
-It now supports both normalized JSON request input and captured raw HTTP request input so developers can validate real Open Payments traffic without manually reshaping it first.
+## Why This Exists
 
-## What It Is
+Open Payments depends on HTTP Message Signatures, client keys, and JWKS-driven verification, but the developer experience is still fragmented:
 
-- A strict TypeScript core library for Content-Digest, Signature-Input, signing, verification, parsing, and inspection
-- An `op-sig` CLI that wraps the core package
-- A minimal Next.js docs and demo app for signing, verification, and inspection workflows
-- Deterministic fixtures and runnable examples for repeatable testing and onboarding
-- A tidy monorepo foundation for future conformance and debugging tooling
+- generic RFC 9421 libraries usually stop at signing primitives
+- Open Payments SDKs do not always give developers a dedicated signing-debugging surface
+- real integration work often starts from captured raw HTTP requests, not idealized objects
+- verification failures are hard to diagnose without signature-base reconstruction and stable error codes
 
-## What It Is Not
+This repository fills that gap with a standards-focused toolkit that is intentionally narrower than a full SDK and more useful than a generic signing helper.
 
-- A full Open Payments SDK
-- A full GNAP client
-- A hosted SaaS
-- A wallet server
-- A browser extension
-- A multi-language implementation
+## What The Toolkit Provides
+
+- Ed25519 request signing for Open Payments-style HTTP requests
+- Content-Digest generation and verification
+- Signature-Input construction and parsing
+- Signature header parsing
+- canonical signature-base reconstruction for inspection and debugging
+- typed verification results with stable failure codes
+- human-readable verification explanations
+- Open Payments presets for common request types
+- raw HTTP request ingestion for captured traces
+- CLI and docs/demo wrappers over the same core implementation
+
+## What Is Working Today
+
+The current repository already includes:
+
+- a strict TypeScript core library in `packages/core`
+- a working `op-sig` CLI in `apps/cli`
+- a working Next.js docs/demo app in `apps/docs`
+- deterministic request/key fixtures in `packages/fixtures`
+- deterministic signed vectors and verification matrices
+- unit, integration, and conformance tests
+- CI that runs the same `pnpm release:check` path used locally
+- opt-in remote JWKS fetching helpers
+- manual interoperability workflows for captured traces and live endpoint validation
+
+## Why This Matters For The Interledger Open Payments SDK Grant
+
+This repo is aligned with the SDK grant theme described for Open Payments security and generated SDK tooling:
+
+- it improves developer experience around RFC 9421 HTTP Message Signatures
+- it provides dedicated tooling around client keys and JWKS verification
+- it focuses on debugging and inspection, not only happy-path signing
+- it supports trace-based interoperability work, which is critical for real SDK integration
+- it is intentionally positioned as reusable dev tooling rather than a competing full SDK
+
+## What This Repo Is Not
+
+- not a full Open Payments SDK
+- not a GNAP client
+- not a wallet server
+- not a hosted SaaS
+- not a browser extension
+- not a multi-language implementation
 
 ## Monorepo Layout
 
@@ -37,64 +75,42 @@ open-payments-http-signatures-devkit/
   .github/
 ```
 
-## Requirements
+## Quick Start
+
+Requirements:
 
 - Node.js `20+`
 - pnpm `10+`
 
-The workspace currently declares `engines.node >= 20`. If you run it under Node 18, installs and local commands may warn even if some tasks still happen to work.
-
-## Install
+Install:
 
 ```bash
+corepack enable
+corepack prepare pnpm@10.24.0 --activate
 pnpm install
 ```
 
-## Workspace Commands
+Run the full validation path:
 
 ```bash
-pnpm build
-pnpm typecheck
-pnpm test
-pnpm lint
-pnpm dev
-pnpm format
 pnpm release:check
 ```
 
-Useful package-scoped commands:
+Run the docs app:
 
 ```bash
-pnpm --filter @open-payments-devkit/core test
 pnpm --filter @open-payments-devkit/docs dev
+```
+
+Build the CLI:
+
+```bash
 pnpm --filter @open-payments-devkit/cli build
-pnpm --filter @open-payments-devkit/examples example:sign
 ```
 
-## Library Example
+## Core API
 
-```ts
-import type { HttpRequestShape } from '@open-payments-devkit/core'
-import { signRequest, verifyRequest } from '@open-payments-devkit/core'
-import { keys, requests } from '@open-payments-devkit/fixtures'
-
-const signed = signRequest(requests.quoteRequest as HttpRequestShape, {
-  created: 1735689600,
-  keyId: 'fixture-primary-key',
-  preset: 'protected-request',
-  privateKeyJwk: keys.privateKey
-})
-
-const verification = verifyRequest(signed.request, {
-  jwks: keys.jwks,
-  preset: 'protected-request'
-})
-
-console.log(signed.signatureBase)
-console.log(verification)
-```
-
-## Public API
+Current public API:
 
 - `createContentDigest(body)`
 - `signRequest(request, options)`
@@ -106,24 +122,19 @@ console.log(verification)
 - `buildSignatureBase(request, parsedSignatureInput)`
 - `explainVerificationResult(result)`
 - `getPreset(name)`
+- `fetchRemoteJwks(url, options?)`
 
-## CLI
+## CLI Examples
 
-The CLI binary name is `op-sig`.
-
-Release-facing notes:
-
-- the CLI is built from [`apps/cli`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/apps/cli)
-- CLI integration coverage exercises `digest`, `preset`, `sign`, `verify`, and `inspect`
-- `pnpm release:check` runs the full validation path before a push or tag
-
-Example commands:
+Digest:
 
 ```bash
-pnpm --filter @open-payments-devkit/cli build
 node apps/cli/dist/index.js digest --body '{"hello":"world"}'
-node apps/cli/dist/index.js preset protected-request
-node apps/cli/dist/index.js example quote-request
+```
+
+Sign a structured request:
+
+```bash
 node apps/cli/dist/index.js sign \
   --method POST \
   --url https://rs.example.com/quotes \
@@ -132,111 +143,162 @@ node apps/cli/dist/index.js sign \
   --body '{"receiver":"https://wallet.example.com/bob"}' \
   --key-file packages/fixtures/keys/ed25519-private.jwk.json \
   --key-id fixture-primary-key \
-  --preset protected-request
+  --preset protected-request \
+  --json
 ```
 
-To verify from a JSON file:
-
-```bash
-node apps/cli/dist/index.js verify \
-  --request-file ./signed-request.json \
-  --jwks-file packages/fixtures/keys/jwks.json \
-  --preset protected-request
-```
-
-To work from captured traffic directly:
+Verify a captured raw HTTP request against a local JWKS:
 
 ```bash
 node apps/cli/dist/index.js verify \
   --raw-request-file ./captured-request.http \
   --jwks-file ./client-keys.jwks.json \
   --preset protected-request \
-  --default-scheme https
-```
-
-You can also sign a captured unsigned request file:
-
-```bash
-node apps/cli/dist/index.js sign \
-  --raw-request-file ./unsigned-request.http \
-  --key-file ./client-private-key.jwk.json \
-  --key-id live-client-key \
-  --preset protected-request \
+  --default-scheme https \
   --json
 ```
 
+Verify using an opt-in remote JWKS URL:
+
+```bash
+node apps/cli/dist/index.js verify \
+  --raw-request-file ./captured-request.http \
+  --jwks-url https://keys.example.com/jwks.json \
+  --jwks-timeout-ms 5000 \
+  --preset protected-request \
+  --default-scheme https \
+  --json
+```
+
+Inspect a signed request:
+
+```bash
+node apps/cli/dist/index.js inspect \
+  --raw-request-file ./captured-request.http \
+  --default-scheme https
+```
+
+## Interoperability Workflows
+
+The repo now includes two opt-in manual interoperability workflows:
+
+1. Trace verification
+   Use this when you have a captured real request and want pass/fail diagnostics.
+
+```bash
+pnpm interop:trace -- \
+  --raw-request-file ./captured-request.http \
+  --jwks-file ./client-keys.jwks.json \
+  --preset protected-request \
+  --default-scheme https
+```
+
+2. Live request preparation and optional dispatch
+   Use this when you want to sign a real request locally, optionally send it to a manually configured endpoint, and record the signed request/response artifacts.
+
+```bash
+pnpm interop:live -- \
+  --method POST \
+  --url https://op.example.com/quotes \
+  --header 'authorization: GNAP access_token="..."' \
+  --header 'content-type: application/json' \
+  --body '{"receiver":"https://wallet.example.com/bob"}' \
+  --key-file ./client-private-key.jwk.json \
+  --key-id live-client-key \
+  --preset protected-request \
+  --dispatch \
+  --expected-status 200 \
+  --save-request ./signed-request.json \
+  --save-raw-request ./signed-request.http \
+  --save-response ./response.json
+```
+
+These flows are manual by design:
+
+- no secrets are hardcoded
+- no live network validation runs in CI by default
+- local JWK/JWKS verification remains the default path
+- remote JWKS fetching only happens when explicitly requested
+
 ## Docs App
 
-The docs app lives in [`apps/docs`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/apps/docs) and provides:
+The docs app provides:
 
 - `/` overview
 - `/sign` signing workflow
 - `/verify` verification workflow
-- `/inspect` canonical base inspection
-- `/examples` bundled example payloads with direct links into the signing, verification, and inspection tools
+- `/inspect` canonical signature-base inspection
+- `/examples` bundled fixture flows
 
-Start it with:
+Each tool supports both:
+
+- structured request input
+- pasted raw HTTP request input
+
+This makes the docs app useful for both onboarding and real trace inspection.
+
+## Screenshot Placeholders
+
+Actual screenshots have not been committed yet. Recommended reviewer-facing screenshots:
+
+- Placeholder: `/sign` using raw HTTP request mode with generated `Content-Digest`, `Signature-Input`, and `Signature`
+- Placeholder: `/verify` showing a typed verification failure and reconstructed signature base
+- Placeholder: CLI trace verification against a captured Open Payments request
+
+## Current Validation Status
+
+Validated today:
+
+- deterministic fixture-based signing and verification
+- raw HTTP parsing and verification
+- CLI signing, verification, and inspection workflows
+- docs app build, lint, and typecheck
+- conformance vectors and failure matrix
+- optional remote JWKS resolution helper tests with mocked fetch behavior
+
+Still intentionally manual:
+
+- live endpoint interoperability checks
+- browser E2E coverage for the docs UI
+- release publishing automation
+
+## Planned Next Work
+
+Planned, but not yet completed:
+
+- deeper interoperability validation against real Open Payments environments
+- expanded reviewer-facing screenshots and examples
+- optional upstream integration and broader conformance support
+- release/publishing automation once the interop story is stable
+
+## Useful Commands
+
+Workspace:
 
 ```bash
-pnpm --filter @open-payments-devkit/docs dev
-```
-
-Each tool route supports both structured form fields and pasted raw HTTP requests, so you can inspect or verify captured Open Payments traffic directly.
-
-## Presets
-
-- `grant-request`: covers `@method`, `@target-uri`, and `content-digest` when a body exists
-- `protected-request`: covers `@method`, `@target-uri`, `authorization`, and `content-digest` when a body exists
-- `resource-write`: same as `protected-request`, requires digest handling for body-bearing writes, and can add default `created`/`expires`
-
-More detail lives in [docs/presets.md](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/docs/presets.md).
-
-## Development Notes
-
-- The core package keeps RFC-oriented logic separate from Open Payments presets
-- Crypto is isolated under [`packages/core/src/crypto`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/packages/core/src/crypto)
-- Verification returns stable codes and structured details for debugging
-- Tests use deterministic fixtures from [`packages/fixtures`](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/packages/fixtures)
-- Publish-facing metadata is defined on the core and fixtures packages for future release work
-- GitHub Actions runs the same `pnpm release:check` validation path used for local release checks
-
-## Testing
-
-Run the full suite:
-
-```bash
-pnpm test
-pnpm typecheck
 pnpm build
+pnpm typecheck
+pnpm test
+pnpm lint
+pnpm release:check
 ```
 
-Core tests cover:
+Package-scoped:
 
-- digest generation
-- Signature-Input serialization and parsing
-- signature base reconstruction
-- Ed25519 sign/verify
-- deterministic signed reference vectors
-- preset behavior
-- header normalization
-- sign/verify integration flows
-- tamper and wrong-key failures
-- fixture-driven verification matrix cases
-- snapshot assertions for signature base and verification payloads
-- captured raw HTTP request parsing and validation paths
-
-## Interoperability Workflow
-
-For real Open Payments traffic, the recommended local loop is:
-
-1. Capture an outgoing request as raw HTTP or normalize it into the shared request JSON shape.
-2. Run `op-sig verify` with a real public JWK or client-key JWKS.
-3. Inspect the returned `signatureBase`, `coveredComponents`, and typed failure `code`.
-4. If needed, use `/inspect` in the docs app to compare canonicalized components line-by-line.
+```bash
+pnpm --filter @open-payments-devkit/core test
+pnpm --filter @open-payments-devkit/cli build
+pnpm --filter @open-payments-devkit/docs dev
+pnpm --filter @open-payments-devkit/examples example:sign
+pnpm interop:trace -- --help
+pnpm interop:live -- --help
+```
 
 ## Additional Documentation
 
-- [Architecture](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/docs/architecture.md)
-- [Presets](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/docs/presets.md)
-- [Verification Model](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/docs/verification-model.md)
-- [Roadmap](/home/core/Desktop/devkit/open-payments-http-signatures-devkit/docs/roadmap.md)
+- `docs/architecture.md`
+- `docs/presets.md`
+- `docs/verification-model.md`
+- `docs/interop-guide.md`
+- `docs/interop-status.md`
+- `docs/roadmap.md`

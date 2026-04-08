@@ -18,6 +18,7 @@ import {
   renderSignedRequest,
   renderVerification
 } from './output.js'
+import { resolveVerificationMaterial } from './verification-material.js'
 
 const program = new Command()
 
@@ -107,6 +108,8 @@ program
   .option('--default-scheme <scheme>', 'Default scheme for raw HTTP request files', 'https')
   .option('--public-key-file <path>', 'Path to a public JWK file')
   .option('--jwks-file <path>', 'Path to a JWKS file')
+  .option('--jwks-url <url>', 'Fetch JWKS from a remote URL')
+  .option('--jwks-timeout-ms <ms>', 'Remote JWKS fetch timeout in milliseconds', Number)
   .option('--preset <preset>', 'Open Payments preset')
   .option('--required-component <component>', 'Required covered component', collect, [])
   .option('--require-digest-for-body', 'Require Content-Digest whenever a body exists')
@@ -117,12 +120,12 @@ program
       rawRequestFile: options.rawRequestFile,
       requestFile: options.requestFile
     })
-    const publicKeyJwk = options.publicKeyFile
-      ? await readJsonFile<JsonWebKey>(options.publicKeyFile)
-      : undefined
-    const jwks = options.jwksFile
-      ? await readJsonFile<{ keys: JsonWebKey[] }>(options.jwksFile)
-      : undefined
+    const { jwks, publicKeyJwk } = await resolveVerificationMaterial({
+      jwksFile: options.jwksFile,
+      jwksTimeoutMs: options.jwksTimeoutMs,
+      jwksUrl: options.jwksUrl,
+      publicKeyFile: options.publicKeyFile
+    })
     const result = verifyRequest(request, {
       jwks,
       preset: options.preset,

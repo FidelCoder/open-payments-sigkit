@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
-const presetNameSchema = z.enum(['grant-request', 'protected-request', 'resource-write'])
+export const presetNameSchema = z.enum(['grant-request', 'protected-request', 'resource-write'])
 
-const jwkSchema = z
+export const jwkSchema = z
   .object({
     alg: z.string().optional(),
     crv: z.string(),
@@ -12,6 +12,10 @@ const jwkSchema = z
     x: z.string()
   })
   .passthrough()
+
+export const jwksSchema = z.object({
+  keys: z.array(jwkSchema)
+})
 
 export const httpRequestShapeSchema = z.object({
   body: z.string().optional(),
@@ -32,14 +36,9 @@ export const signRequestOptionsSchema = z.object({
 })
 
 export const verifyRequestOptionsSchema = z.object({
-  jwks: z
-    .object({
-      keys: z.array(jwkSchema)
-    })
-    .optional(),
+  jwks: jwksSchema.optional(),
   preset: presetNameSchema.optional(),
   publicKeyJwk: jwkSchema.optional(),
   requireDigestForBody: z.boolean().optional(),
   requiredComponents: z.array(z.string().min(1)).optional()
 })
-

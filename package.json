@@ -26,6 +26,8 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "interop:live": "pnpm --filter @open-payments-devkit/examples interop:live",
+    "interop:trace": "pnpm --filter @open-payments-devkit/examples interop:trace",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",

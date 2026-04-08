@@ -28,6 +28,46 @@ export const serializeHeaders = (headers: HttpRequestShape['headers'] = {}): str
     .map(([name, value]) => `${name}: ${value}`)
     .join('\n')
 
+export const serializeRequestToRawHttp = (request: HttpRequestShape): string => {
+  const normalizedUrl = new URL(request.url)
+  const requestTarget = `${normalizedUrl.pathname}${normalizedUrl.search}`
+  const headers = {
+    Host: normalizedUrl.host,
+    ...(request.headers ?? {})
+  }
+
+  return [
+    `${request.method.toUpperCase()} ${requestTarget || '/'} HTTP/1.1`,
+    ...Object.entries(headers).map(([name, value]) => `${name}: ${value}`),
+    '',
+    request.body ?? ''
+  ]
+    .join('\n')
+    .trimEnd()
+}
+
+export const buildRawRequestDraftFromFormInput = (input: {
+  body: string
+  headersText: string
+  method: string
+  url: string
+}): string => {
+  if (!input.method.trim() || !input.url.trim()) {
+    return ''
+  }
+
+  try {
+    return serializeRequestToRawHttp({
+      ...(input.body.trim() ? { body: input.body } : {}),
+      headers: parseHeadersText(input.headersText),
+      method: input.method,
+      url: input.url
+    })
+  } catch {
+    return ''
+  }
+}
+
 export const parseComponentsText = (value: string): string[] | undefined => {
   const components = value
     .split(/\n|,/)

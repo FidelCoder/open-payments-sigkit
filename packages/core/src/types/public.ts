@@ -6,6 +6,13 @@ import type { JsonWebKey } from 'node:crypto'
 export type PresetName = 'grant-request' | 'protected-request' | 'resource-write'
 
 /**
+ * Shared JWKS shape used by verification helpers.
+ */
+export type JwksShape = {
+  keys: JsonWebKey[]
+}
+
+/**
  * Shared HTTP request shape used by the devkit.
  */
 export type HttpRequestShape = {
@@ -41,10 +48,27 @@ export type SignRequestOptions = {
  */
 export type VerifyRequestOptions = {
   publicKeyJwk?: JsonWebKey
-  jwks?: { keys: JsonWebKey[] }
+  jwks?: JwksShape
   requireDigestForBody?: boolean
   requiredComponents?: string[]
   preset?: PresetName
+}
+
+/**
+ * Stable error codes returned by optional remote JWKS fetching helpers.
+ */
+export type RemoteJwksFetchErrorCode =
+  | 'REMOTE_JWKS_TIMEOUT'
+  | 'REMOTE_JWKS_HTTP_ERROR'
+  | 'REMOTE_JWKS_INVALID'
+  | 'REMOTE_JWKS_NETWORK_ERROR'
+
+/**
+ * Options for fetching a remote JWKS document.
+ */
+export type RemoteJwksFetchOptions = {
+  timeoutMs?: number
+  headers?: Record<string, string>
 }
 
 /**

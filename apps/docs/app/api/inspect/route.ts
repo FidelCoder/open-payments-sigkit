@@ -6,9 +6,13 @@ export const runtime = 'nodejs'
 export async function POST(request: Request): Promise<Response> {
   try {
     const body = await request.json()
-    const result = inspectRequestSignature(buildRequestFromFormInput(body))
+    const parsedRequest = buildRequestFromFormInput(body)
+    const result = inspectRequestSignature(parsedRequest)
 
-    return Response.json({ result })
+    return Response.json({
+      request: parsedRequest,
+      result
+    })
   } catch (error) {
     return Response.json(
       {

@@ -14,25 +14,36 @@ export function ExampleSwitcher({
 }: ExampleSwitcherProps) {
   return (
     <section className="example-switcher">
-      <div>
-        <p className="eyebrow">Input mode</p>
-        <h2>Start from your own request, or load a reference vector if you need one.</h2>
+      <div className="example-switcher__header">
+        <div>
+          <p className="eyebrow">Examples</p>
+          <h2>Load a bundled request when you want a clean starting point.</h2>
+          <p>
+            The workflows default to your own request, but you can jump into deterministic Open
+            Payments vectors at any point.
+          </p>
+        </div>
+        <Link className="ghost-link" href="/examples">
+          Open example gallery
+        </Link>
       </div>
-      <div className="chip-list" aria-label={`${route} examples`}>
+
+      <div className="example-switcher__grid" aria-label={`${route} examples`}>
         <Link
-          className={currentExample === 'custom' ? 'chip-link chip-link--active' : 'chip-link'}
+          className={currentExample === 'custom' ? 'example-chip is-active' : 'example-chip'}
           href={`/${route}?example=custom`}
         >
-          <span>Custom input</span>
-          <small>No preset required</small>
+          <strong>Custom input</strong>
+          <span>Start with your own request and keys.</span>
         </Link>
         {examples.map((example) => (
           <Link
             key={`${route}-${example.name}`}
-            className={example.name === currentExample ? 'chip-link chip-link--active' : 'chip-link'}
+            className={example.name === currentExample ? 'example-chip is-active' : 'example-chip'}
             href={`/${route}?example=${example.name}`}
           >
-            <span>{example.label}</span>
+            <strong>{example.label}</strong>
+            <span>{example.requestType}</span>
             <small>{example.preset}</small>
           </Link>
         ))}

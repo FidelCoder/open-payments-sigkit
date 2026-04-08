@@ -16,6 +16,7 @@ The core package owns:
 
 - request normalization
 - raw captured HTTP request parsing
+- opt-in remote JWKS fetching helpers
 - Content-Digest creation and validation
 - structured field parsing for `Signature` and `Signature-Input`
 - canonical signature base reconstruction
@@ -61,6 +62,11 @@ The fixture package now also carries deterministic signed vectors and a verifica
 ## `packages/examples`
 
 Examples are runnable scripts that demonstrate how the library behaves in common Open Payments scenarios.
+
+They now also include manual interoperability harnesses for:
+
+- trace-based verification of captured requests
+- local request signing plus optional live endpoint dispatch
 
 ## Data Flow
 

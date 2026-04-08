@@ -4,18 +4,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && tsc -p tsconfig.json",
     "clean": "rimraf dist",
     "dev": "tsc -p tsconfig.json --watch",
-    "example:inspect": "tsx src/inspect.ts",
-    "example:resource-write": "tsx src/resource-write.ts",
-    "example:sign": "tsx src/sign-and-verify.ts",
+    "example:inspect": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && tsx src/inspect.ts",
+    "interop:live": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && tsx src/interop-live.ts",
+    "interop:trace": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && tsx src/interop-trace.ts",
+    "example:resource-write": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && tsx src/resource-write.ts",
+    "example:sign": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && tsx src/sign-and-verify.ts",
     "lint": "eslint src --ext .ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "pnpm --filter @open-payments-devkit/core build && pnpm --filter @open-payments-devkit/fixtures build && tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@open-payments-devkit/core": "workspace:*",
     "@open-payments-devkit/fixtures": "workspace:*"
   }
 }
-

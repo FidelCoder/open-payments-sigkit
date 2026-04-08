@@ -1,115 +1,143 @@
 import Link from 'next/link'
 import { ResultCard } from '../components/result-card'
+import { StatusBadge } from '../components/status-badge'
+import { repoHref } from '../lib/navigation'
 
 const workflows = [
   {
     href: '/sign',
-    label: 'Build signed requests',
-    summary: 'Generate Content-Digest, Signature-Input, and Signature headers.'
+    label: 'Sign requests',
+    summary: 'Generate Content-Digest, Signature-Input, Signature, and inspect the exact canonical base.'
   },
   {
     href: '/verify',
-    label: 'Debug verification',
-    summary: 'Reconstruct the canonical base and explain failures clearly.'
+    label: 'Verify signatures',
+    summary: 'Resolve keys from JWK, JWKS, or optional remote JWKS and get typed remediation guidance.'
   },
   {
     href: '/inspect',
     label: 'Inspect canonicalization',
-    summary: 'See parsed signature headers and each canonical component line.'
+    summary: 'Break down covered components, parsed signature headers, and canonical component lines.'
   },
   {
     href: '/examples',
-    label: 'Load fixtures',
-    summary: 'Start from bundled Open Payments requests and presets.'
+    label: 'Browse examples',
+    summary: 'Launch deterministic Open Payments request vectors into sign, verify, or inspect.'
   }
 ] as const
 
+const capabilities = [
+  'Sign and verify Open Payments request classes with Ed25519 keys.',
+  'Inspect canonical signature bases instead of debugging from opaque headers.',
+  'Load raw captured HTTP requests when a real trace matters more than a synthetic payload.',
+  'Verify locally against JWK or JWKS material, with optional remote JWKS resolution when you explicitly choose it.'
+]
+
+const trustSignals = [
+  'Deterministic fixtures and signed vectors included in-repo',
+  'CLI and docs app use the same core implementation',
+  'Typed verification failures with clear remediation text',
+  'Manual interoperability harness for trace-based and live checks'
+]
+
 export default function HomePage() {
   return (
-    <div className="home-stack">
-      <section className="hero-panel">
-        <div className="hero-panel__copy">
-          <p className="eyebrow">Reference toolkit</p>
-          <h2>Open Payments request signing without guesswork.</h2>
-          <p className="hero-panel__lead">
-            Generate Content-Digest, build Signature-Input, sign Ed25519 requests, verify against
-            JWK or JWKS material, inspect canonical signature bases, and explain failures with
-            stable remediation guidance.
-          </p>
+    <div className="page-stack">
+      <section className="hero-grid">
+        <div className="hero-card">
+          <div className="hero-card__copy">
+            <p className="eyebrow">Open Payments HTTP Signatures Devkit</p>
+            <h1>A developer workspace for signing, verifying, and debugging RFC 9421 request flows.</h1>
+            <p>
+              This docs app is a serious inspection surface for the toolkit: use it to build
+              signed requests, explain verification failures, inspect canonical bases, and move
+              between bundled examples and real captured traces without leaving the repo.
+            </p>
+          </div>
+
+          <div className="hero-card__actions">
+            <Link className="primary-link" href="/sign">
+              Open sign workflow
+            </Link>
+            <Link className="action-link" href="/verify">
+              Debug verification
+            </Link>
+            <a className="action-link" href={repoHref} target="_blank" rel="noreferrer">
+              Open repository
+            </a>
+          </div>
+
+          <div className="hero-card__badges">
+            <StatusBadge>CLI support</StatusBadge>
+            <StatusBadge>Raw HTTP traces</StatusBadge>
+            <StatusBadge>Open Payments presets</StatusBadge>
+            <StatusBadge>Optional remote JWKS</StatusBadge>
+          </div>
         </div>
-        <div className="hero-panel__metrics">
-          <div className="hero-stat">
-            <span>Coverage</span>
-            <strong>Sign, verify, inspect</strong>
+
+        <div className="hero-side">
+          <div className="hero-side__section">
+            <p className="eyebrow">What you can trust today</p>
+            <ul className="sidebar-list">
+              {trustSignals.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
           </div>
-          <div className="hero-stat">
-            <span>Focus</span>
-            <strong>Open Payments request classes</strong>
-          </div>
-          <div className="hero-stat">
-            <span>Crypto</span>
-            <strong>Ed25519 with JWK and JWKS support</strong>
+          <div className="hero-side__section">
+            <p className="eyebrow">Quick start</p>
+            <ol className="ordered-list">
+              <li>Choose a workflow.</li>
+              <li>Paste a real request or load a deterministic example.</li>
+              <li>Inspect the generated or reconstructed signature data.</li>
+            </ol>
           </div>
         </div>
       </section>
 
-      <section className="overview-grid">
-        <article className="overview-card">
-          <p className="eyebrow">Designed for Open Payments</p>
-          <h2>Presets map to actual request classes.</h2>
-          <p>
-            Grant requests, token-bound protected calls, and resource writes share a common signing
-            core with policy defaults that stay visible and inspectable.
-          </p>
-        </article>
-        <article className="overview-card">
-          <p className="eyebrow">Debuggable by default</p>
-          <h2>Verification failures come back with usable context.</h2>
-          <p>
-            The toolkit exposes signature bases, covered components, stable failure codes, and
-            remediation hints so developers can fix request construction problems quickly.
-          </p>
-        </article>
-        <article className="overview-card">
-          <p className="eyebrow">Reference vectors included</p>
-          <h2>Deterministic fixtures make behavior repeatable.</h2>
-          <p>
-            The repo includes fixed keys, request fixtures, and conformance vectors so the CLI,
-            docs app, and core package all demonstrate the same canonical behavior.
-          </p>
-        </article>
+      <section className="feature-grid">
+        {workflows.map((workflow) => (
+          <Link key={workflow.href} href={workflow.href} className="feature-card">
+            <p className="eyebrow">Workflow</p>
+            <h2>{workflow.label}</h2>
+            <p>{workflow.summary}</p>
+            <span>Open workspace</span>
+          </Link>
+        ))}
       </section>
 
-      <section className="routes-grid">
+      <section className="two-column-grid">
         <ResultCard
-          title="Open a workflow"
+          title="Current capability summary"
+          description="The toolkit is already usable as a reference signing and debugging environment."
           body={
-            <div className="route-list">
-              {workflows.map((workflow) => (
-                <Link key={workflow.href} className="route-link" href={workflow.href}>
-                  <span>{workflow.label}</span>
-                  <small>{workflow.summary}</small>
-                </Link>
+            <div className="stack">
+              {capabilities.map((capability) => (
+                <div key={capability} className="list-row">
+                  <strong>{capability}</strong>
+                </div>
               ))}
             </div>
           }
         />
+
         <ResultCard
-          title="Included presets"
+          title="Fast paths"
+          description="Jump directly into the most common developer tasks."
           body={
-            <div className="preset-list">
-              <div className="preset-item">
-                <strong>grant-request</strong>
-                <span>Method, target URI, and digest when a body exists.</span>
-              </div>
-              <div className="preset-item">
-                <strong>protected-request</strong>
-                <span>Adds authorization coverage for token-bound requests.</span>
-              </div>
-              <div className="preset-item">
-                <strong>resource-write</strong>
-                <span>Protected write preset with stricter digest handling and default timestamps.</span>
-              </div>
+            <div className="stack">
+              <Link className="action-link" href="/sign?example=custom">
+                Start from your own request
+              </Link>
+              <Link className="action-link" href="/verify?example=quote-request">
+                Verify a protected request example
+              </Link>
+              <Link className="action-link" href="/inspect?example=incoming-payment">
+                Inspect a resource-write signature base
+              </Link>
+              <Link className="action-link" href="/examples">
+                Search all bundled examples
+              </Link>
             </div>
           }
         />

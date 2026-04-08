@@ -3,6 +3,7 @@ export { signRequest } from './signatures/sign-request.js'
 export { verifyRequest } from './signatures/verify-request.js'
 export { inspectRequestSignature } from './signatures/inspect-request-signature.js'
 export { parseRawHttpRequest } from './http/raw-request.js'
+export { RemoteJwksFetchError, fetchRemoteJwks } from './jwk/remote-jwks.js'
 export { parseSignatureInput } from './structured-fields/signature-input.js'
 export { parseSignature } from './structured-fields/signature.js'
 export { buildSignatureBase } from './signatures/signature-base.js'
@@ -12,6 +13,7 @@ export type {
   CanonicalComponent,
   HttpRequestShape,
   InspectionResult,
+  JwksShape,
   ParsedSignature,
   ParsedSignatureInput,
   ParsedSignatureInputs,
@@ -19,6 +21,8 @@ export type {
   PresetDefinition,
   PresetName,
   RawHttpRequestParseOptions,
+  RemoteJwksFetchErrorCode,
+  RemoteJwksFetchOptions,
   SignRequestOptions,
   SignedRequestResult,
   SignatureInputParameters,
