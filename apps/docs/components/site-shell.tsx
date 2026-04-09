@@ -121,42 +121,44 @@ export function SiteShell({ children }: PropsWithChildren) {
 
       <div className="app-body">
         <aside className="app-sidebar desktop-only">
-          <div className="sidebar-panel">
-            <p className="eyebrow">Workspace</p>
-            <div className="sidebar-nav" aria-label="Workspace navigation">
-              {docsNavLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={isRouteActive(pathname, link.href) ? 'sidebar-link is-active' : 'sidebar-link'}
-                >
-                  <strong>{link.label}</strong>
-                  <span>{link.description}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
+          <div className="sidebar-rail">
+            <section className="sidebar-section">
+              <p className="eyebrow">Workspace</p>
+              <div className="sidebar-nav" aria-label="Workspace navigation">
+                {docsNavLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={isRouteActive(pathname, link.href) ? 'sidebar-link is-active' : 'sidebar-link'}
+                  >
+                    <strong>{link.label}</strong>
+                    <span>{link.description}</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
 
-          <div className="sidebar-panel">
-            <p className="eyebrow">Capabilities</p>
-            <ul className="sidebar-list">
-              {capabilitySummary.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
+            <section className="sidebar-section">
+              <p className="eyebrow">Capabilities</p>
+              <ul className="sidebar-list">
+                {capabilitySummary.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
 
-          <div className="sidebar-panel sidebar-panel--accent">
-            <p className="eyebrow">Trust signals</p>
-            <ul className="sidebar-list">
-              {trustSignals.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            <a className="sidebar-link sidebar-link--external" href={repoHref} target="_blank" rel="noreferrer">
-              <strong>Repository</strong>
-              <span>Read the implementation, CLI, fixtures, and docs.</span>
-            </a>
+            <section className="sidebar-section sidebar-section--muted">
+              <p className="eyebrow">Trust signals</p>
+              <ul className="sidebar-list">
+                {trustSignals.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <a className="sidebar-link sidebar-link--external" href={repoHref} target="_blank" rel="noreferrer">
+                <strong>Repository</strong>
+                <span>Read the implementation, CLI, fixtures, and docs.</span>
+              </a>
+            </section>
           </div>
         </aside>
 

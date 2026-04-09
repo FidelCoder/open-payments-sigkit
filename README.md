@@ -140,6 +140,34 @@ Build the CLI:
 pnpm --filter @open-payments-devkit/cli build
 ```
 
+## Vercel Deployment
+
+The docs app is set up to deploy on Vercel as the web surface for this repository.
+
+Recommended Vercel project settings:
+
+- Framework: `Next.js`
+- Root Directory: `apps/docs`
+- Node.js version: `20.x` or `22.x`
+- Install Command: use the default Vercel pnpm install flow
+- Build Command: use the checked-in `apps/docs/vercel.json` configuration
+
+Why the docs app needs dedicated setup:
+
+- the repository is a pnpm monorepo
+- the deployable web app lives in `apps/docs`
+- the docs app imports workspace packages from outside its directory
+
+The repository already includes:
+
+- `apps/docs/vercel.json` for the docs project commands
+- `outputFileTracingRoot` in `apps/docs/next.config.mjs` so Vercel can trace workspace packages correctly
+- `packageManager` and `engines.node` in `apps/docs/package.json` so the deploy target advertises pnpm and Node `>=20`
+
+After importing the repository into Vercel, set the project root to `apps/docs` and deploy.
+
+If the project was created with a newer default Node.js version in Vercel, switch it to `20.x` or `22.x` in the Vercel project settings before deploying.
+
 ## TypeScript API
 
 Current public API:

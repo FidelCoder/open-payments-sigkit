@@ -95,9 +95,6 @@ export function InspectTool({ defaults, examples, selectedExample }: InspectTool
           </div>
         }
       />
-
-      <ExampleSwitcher currentExample={selectedExample} examples={examples} route="inspect" />
-
       <form
         className="workflow-form"
         onSubmit={(event) => {
@@ -140,6 +137,8 @@ export function InspectTool({ defaults, examples, selectedExample }: InspectTool
         <WorkflowShell
           form={
             <div className="workspace-form">
+              <ExampleSwitcher currentExample={selectedExample} examples={examples} route="inspect" />
+
               <WorkflowPanel
                 step="1"
                 title="Request input"

@@ -114,9 +114,6 @@ export function SignTool({
           </div>
         }
       />
-
-      <ExampleSwitcher currentExample={selectedExample} examples={examples} route="sign" />
-
       <form
         className="workflow-form"
         onSubmit={(event) => {
@@ -165,6 +162,8 @@ export function SignTool({
         <WorkflowShell
           form={
             <div className="workspace-form">
+              <ExampleSwitcher currentExample={selectedExample} examples={examples} route="sign" />
+
               <WorkflowPanel
                 step="1"
                 title="Request input"

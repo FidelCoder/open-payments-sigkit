@@ -131,9 +131,6 @@ export function VerifyTool({
           </div>
         }
       />
-
-      <ExampleSwitcher currentExample={selectedExample} examples={examples} route="verify" />
-
       <form
         className="workflow-form"
         onSubmit={(event) => {
@@ -183,6 +180,8 @@ export function VerifyTool({
         <WorkflowShell
           form={
             <div className="workspace-form">
+              <ExampleSwitcher currentExample={selectedExample} examples={examples} route="verify" />
+
               <WorkflowPanel
                 step="1"
                 title="Request input"

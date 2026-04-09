@@ -44,58 +44,60 @@ const trustSignals = [
 export default function HomePage() {
   return (
     <div className="page-stack">
-      <section className="hero-grid">
-        <div className="hero-card">
-          <div className="hero-card__copy">
-            <p className="eyebrow">Open Payments HTTP Signatures Devkit</p>
-            <h1>A developer workspace for signing, verifying, and debugging RFC 9421 request flows.</h1>
-            <p>
-              This docs app is a serious inspection surface for the toolkit: use it to build
-              signed requests, explain verification failures, inspect canonical bases, and move
-              between bundled examples and real captured traces without leaving the repo. The
-              TypeScript toolchain is the most complete surface today, and the repository now also
-              includes a Python library preview for the same core request-signing model.
-            </p>
+      <section className="hero-surface">
+        <div className="hero-grid">
+          <div className="hero-card">
+            <div className="hero-card__copy">
+              <p className="eyebrow">Open Payments HTTP Signatures Devkit</p>
+              <h1>A developer workspace for signing, verifying, and debugging RFC 9421 request flows.</h1>
+              <p>
+                This docs app is a serious inspection surface for the toolkit: use it to build
+                signed requests, explain verification failures, inspect canonical bases, and move
+                between bundled examples and real captured traces without leaving the repo. The
+                TypeScript toolchain is the most complete surface today, and the repository now also
+                includes a Python library preview for the same core request-signing model.
+              </p>
+            </div>
+
+            <div className="hero-card__actions">
+              <Link className="primary-link" href="/sign">
+                Open sign workflow
+              </Link>
+              <Link className="action-link" href="/verify">
+                Debug verification
+              </Link>
+              <a className="action-link" href={repoHref} target="_blank" rel="noreferrer">
+                Open repository
+              </a>
+            </div>
+
+            <div className="hero-card__badges">
+              <StatusBadge>TypeScript reference</StatusBadge>
+              <StatusBadge>Python preview</StatusBadge>
+              <StatusBadge>CLI support</StatusBadge>
+              <StatusBadge>Raw HTTP traces</StatusBadge>
+              <StatusBadge>Optional remote JWKS</StatusBadge>
+            </div>
           </div>
 
-          <div className="hero-card__actions">
-            <Link className="primary-link" href="/sign">
-              Open sign workflow
-            </Link>
-            <Link className="action-link" href="/verify">
-              Debug verification
-            </Link>
-            <a className="action-link" href={repoHref} target="_blank" rel="noreferrer">
-              Open repository
-            </a>
-          </div>
-
-          <div className="hero-card__badges">
-            <StatusBadge>TypeScript reference</StatusBadge>
-            <StatusBadge>Python preview</StatusBadge>
-            <StatusBadge>CLI support</StatusBadge>
-            <StatusBadge>Raw HTTP traces</StatusBadge>
-            <StatusBadge>Optional remote JWKS</StatusBadge>
-          </div>
-        </div>
-
-        <div className="hero-side">
-          <div className="hero-side__section">
-            <p className="eyebrow">What you can trust today</p>
-            <ul className="sidebar-list">
-              {trustSignals.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="hero-side__section">
-            <p className="eyebrow">Quick start</p>
-            <ol className="ordered-list">
-              <li>Choose a workflow.</li>
-              <li>Paste a real request or load a deterministic example.</li>
-              <li>Inspect the generated or reconstructed signature data.</li>
-              <li>Use the root README for TypeScript and Python library commands.</li>
-            </ol>
+          <div className="hero-side">
+            <div className="hero-side__section">
+              <p className="eyebrow">What you can trust today</p>
+              <ul className="sidebar-list">
+                {trustSignals.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="hero-side__section">
+              <p className="eyebrow">Quick start</p>
+              <ol className="ordered-list">
+                <li>Choose a workflow.</li>
+                <li>Paste a real request or load a deterministic example.</li>
+                <li>Inspect the generated or reconstructed signature data.</li>
+                <li>Use the root README for TypeScript and Python library commands.</li>
+              </ol>
+            </div>
           </div>
         </div>
       </section>
