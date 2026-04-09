@@ -10,5 +10,4 @@ Included fixture groups:
 - signed golden vectors
 - verification conformance cases
 
-These fixtures are intended for tests, examples, and interoperability debugging.
-
+These fixtures are intended for tests, examples, and interoperability debugging across the TypeScript and Python implementations.

@@ -5,7 +5,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   description:
-    'Focused tooling for Open Payments HTTP Message Signatures, Ed25519 client keys, inspection, and verification.',
+    'Open Payments signature toolkit for signing, verification, inspection, debugging, and multi-language developer workflows.',
   title: 'Open Payments HTTP Signatures Devkit'
 }
 
@@ -18,4 +18,3 @@ export default function RootLayout({ children }: PropsWithChildren) {
     </html>
   )
 }
-

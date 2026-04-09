@@ -74,7 +74,7 @@ export function ExamplesCatalog({ examples }: ExamplesCatalogProps) {
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Find quote requests, resource writes, grant flows…"
+            placeholder="Find quote requests, resource writes, bootstrap flows…"
           />
         </label>
 

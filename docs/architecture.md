@@ -10,6 +10,22 @@
 
 ## Packages
 
+## `languages/python`
+
+The Python area is the first language-specific expansion path outside the TypeScript workspace.
+
+It currently provides:
+
+- request models
+- digest helpers
+- signature input and signature parsing
+- canonical signature-base construction
+- Ed25519 sign and verify helpers
+- basic signing, verification, and inspection flows
+- fixture-backed tests and examples
+
+This keeps the TypeScript reference implementation intact while establishing a clean structure for future language targets.
+
 ## `packages/core`
 
 The core package owns:
@@ -24,6 +40,8 @@ The core package owns:
 - JWK and JWKS lookup
 - Open Payments presets
 - verification explainers
+
+TypeScript remains the most complete implementation in the repository and is the source of truth for the CLI, docs app, raw HTTP parsing, and the current interop harness.
 
 Internal source layout:
 
@@ -57,7 +75,7 @@ The request editor supports two modes:
 
 Fixtures provide stable request payloads and Ed25519 JWK material for tests, examples, demos, and reproducible debugging.
 
-The fixture package now also carries deterministic signed vectors and a verification-case matrix so higher-level tools can validate against the same canonical Open Payments examples.
+The fixture package also carries deterministic signed vectors and a verification-case matrix so TypeScript and Python work can validate against the same canonical Open Payments examples.
 
 ## `packages/examples`
 
@@ -84,3 +102,4 @@ They now also include manual interoperability harnesses for:
 - Additional algorithms can be added by extending `crypto/` without rewriting request parsing or preset logic.
 - More Open Payments request profiles can be added as new preset definitions.
 - Conformance and fixture expansions can grow independently of the core cryptographic flow.
+- Additional language implementations should live under `languages/` and reuse shared fixture intent instead of copying product semantics ad hoc.

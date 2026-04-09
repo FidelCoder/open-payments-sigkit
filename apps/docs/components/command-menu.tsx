@@ -122,7 +122,7 @@ export function CommandMenu({
           {filteredItems.length === 0 ? (
             <div className="command-menu__empty">
               <p>No matches yet.</p>
-              <span>Try searching for sign, verify, grant, or quote.</span>
+              <span>Try searching for sign, verify, inspect, or quote.</span>
             </div>
           ) : null}
         </div>

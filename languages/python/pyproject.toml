@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "open-payments-http-signatures-devkit"
+version = "0.1.0"
+description = "Python developer tooling for Open Payments HTTP Message Signatures, Content-Digest, Ed25519 signing, and verification debugging."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["cryptography>=42,<46"]
+keywords = [
+  "open-payments",
+  "http-message-signatures",
+  "rfc9421",
+  "content-digest",
+  "ed25519"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Security :: Cryptography"
+]
+
+[project.urls]
+Homepage = "https://github.com/FidelCoder/open-payments-sigkit"
+Repository = "https://github.com/FidelCoder/open-payments-sigkit.git"
+Issues = "https://github.com/FidelCoder/open-payments-sigkit/issues"
+
+[project.optional-dependencies]
+dev = ["ruff>=0.7"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useMemo, useState, useTransition } from 'react'
 import type { HttpRequestShape, InspectionResult } from '@open-payments-devkit/core'
+import { CollapsibleBlock } from './collapsible-block'
 import { CodeBlock } from './code-block'
 import { CopyButton } from './copy-button'
 import { EmptyState } from './empty-state'
@@ -11,9 +12,10 @@ import { KeyValueList } from './key-value-list'
 import { LoadingPanel } from './loading-panel'
 import { PageHeader } from './page-header'
 import { RequestEditor, type RequestInputFormat } from './request-editor'
-import { ResultCard } from './result-card'
 import { StatusBadge } from './status-badge'
-import { StepCard } from './step-card'
+import { StatusBanner } from './status-banner'
+import { WorkflowPanel } from './workflow-panel'
+import { WorkflowShell } from './workflow-shell'
 import type { DemoExample, DemoSelectionName } from '../lib/demo-defaults'
 import { formatJson, formatRequestSummary, joinLines } from '../lib/output-formatters'
 import { buildRawRequestDraftFromFormInput } from '../lib/request-drafts'
@@ -97,7 +99,7 @@ export function InspectTool({ defaults, examples, selectedExample }: InspectTool
       <ExampleSwitcher currentExample={selectedExample} examples={examples} route="inspect" />
 
       <form
-        className="workspace-grid"
+        className="workflow-form"
         onSubmit={(event) => {
           event.preventDefault()
           startTransition(() => {
@@ -135,200 +137,204 @@ export function InspectTool({ defaults, examples, selectedExample }: InspectTool
           })
         }}
       >
-        <div className="workspace-form">
-          <StepCard
-            step="1"
-            title="Request input"
-            description="Use the same request shape you would sign or verify. Inspection is most useful when you need to compare exact canonicalization across clients."
-          >
-            <RequestEditor
-              body={body}
-              headersText={headersText}
-              idPrefix="inspect"
-              inputFormat={inputFormat}
-              method={method}
-              onBodyChange={setBody}
-              onHeadersTextChange={setHeadersText}
-              onInputFormatChange={(nextInputFormat) => {
-                if (nextInputFormat === 'raw' && !rawRequestText.trim()) {
-                  const serialized = buildRawRequestDraftFromFormInput({
-                    body,
-                    headersText,
-                    method,
-                    url
-                  })
+        <WorkflowShell
+          form={
+            <div className="workspace-form">
+              <WorkflowPanel
+                step="1"
+                title="Request input"
+                description="Use the same request shape you would sign or verify so the canonicalization matches the real exchange."
+              >
+                <RequestEditor
+                  body={body}
+                  headersText={headersText}
+                  idPrefix="inspect"
+                  inputFormat={inputFormat}
+                  method={method}
+                  onBodyChange={setBody}
+                  onHeadersTextChange={setHeadersText}
+                  onInputFormatChange={(nextInputFormat) => {
+                    if (nextInputFormat === 'raw' && !rawRequestText.trim()) {
+                      const serialized = buildRawRequestDraftFromFormInput({
+                        body,
+                        headersText,
+                        method,
+                        url
+                      })
 
-                  if (serialized) {
-                    setRawRequestText(serialized)
-                  }
-                }
+                      if (serialized) {
+                        setRawRequestText(serialized)
+                      }
+                    }
 
-                setInputFormat(nextInputFormat)
-              }}
-              onMethodChange={setMethod}
-              onRawRequestTextChange={setRawRequestText}
-              onRequestSchemeChange={setRequestScheme}
-              onUrlChange={setUrl}
-              rawRequestText={rawRequestText}
-              requestScheme={requestScheme}
-              url={url}
-            />
-          </StepCard>
+                    setInputFormat(nextInputFormat)
+                  }}
+                  onMethodChange={setMethod}
+                  onRawRequestTextChange={setRawRequestText}
+                  onRequestSchemeChange={setRequestScheme}
+                  onUrlChange={setUrl}
+                  rawRequestText={rawRequestText}
+                  requestScheme={requestScheme}
+                  url={url}
+                />
+              </WorkflowPanel>
 
-          <StepCard
-            step="2"
-            title="Inspection workspace"
-            description="Run the inspector to see the selected label, canonical component values, and the signature-base string the toolkit reconstructs from the headers."
-          >
-            <div className="callout callout--neutral">
-              <strong>What inspection exposes</strong>
-              <p>
-                This view is meant for debugging: it surfaces parsed Signature-Input and Signature
-                dictionaries, component-by-component canonicalization, and the final signature base.
-              </p>
-            </div>
-          </StepCard>
-
-          <div className="sticky-submit">
-            <div>
-              <strong>Inspect request</strong>
-              <p>The output workspace will update with parsed headers and canonicalized lines.</p>
-            </div>
-            <button type="submit" className="primary-button" disabled={isPending}>
-              {isPending ? 'Inspecting…' : 'Inspect request'}
-            </button>
-          </div>
-        </div>
-
-        <div className="workspace-output">
-          {isPending ? <LoadingPanel /> : null}
-
-          {!isPending && error ? (
-            <ResultCard
-              title="Unable to inspect this request"
-              description="The request needs to be valid enough for the inspector to parse the signature headers."
-              tone="danger"
-              body={<CodeBlock label="Error" value={error} />}
-            />
-          ) : null}
-
-          {!isPending && !error && payload ? (
-            <div className="result-stack">
-              <section className="result-summary result-summary--default">
-                <div>
-                  <p className="eyebrow">Inspection result</p>
-                  <h2>Canonicalization breakdown ready.</h2>
+              <WorkflowPanel
+                step="2"
+                title="Inspection focus"
+                description="Use this workflow when you need to compare canonical lines, label selection, or parsed header dictionaries across clients."
+              >
+                <div className="inline-note">
+                  <strong>What you will see</strong>
                   <p>
-                    Review the parsed signature headers, covered components, and the exact
-                    signature base that the toolkit derived from the request.
+                    The inspector surfaces the selected signature label, the covered components,
+                    the canonical lines for each component, and the final signature base string.
                   </p>
-                  <div className="result-summary__badges">
-                    <StatusBadge>{payload.result.selectedLabel ?? 'No selected label'}</StatusBadge>
-                    <StatusBadge>{`${payload.result.coveredComponents.length} covered components`}</StatusBadge>
-                    <StatusBadge>{payload.result.signatureBase ? 'Signature base available' : 'No signature base'}</StatusBadge>
-                  </div>
                 </div>
-                <CopyButton label="Copy inspection payload" value={copyAllResult} />
-              </section>
+              </WorkflowPanel>
 
-              <ResultCard
-                title="Parsed request"
-                description="This is the normalized request shape that the inspector used to reconstruct the signature base."
-                body={
-                  <div className="stack">
-                    <KeyValueList items={[...formatRequestSummary(payload.request)]} />
-                    <CodeBlock label="Request JSON" value={formatJson(payload.request)} />
-                  </div>
-                }
-              />
-
-              <div className="tool-result-grid">
-                <ResultCard
-                  title="Covered components"
-                  description="These are the components listed under the selected Signature-Input label."
-                  body={
-                    <CodeBlock
-                      label="Covered components"
-                      value={joinLines(payload.result.coveredComponents, 'No covered components were returned.')}
-                    />
-                  }
-                />
-                <ResultCard
-                  title="Signature headers"
-                  description="Both raw headers are shown exactly as they were read from the request."
-                  body={
-                    <div className="stack">
-                      <CodeBlock
-                        label="Signature-Input header"
-                        value={payload.result.signatureInputHeader ?? 'No Signature-Input header found.'}
-                      />
-                      <CodeBlock
-                        label="Signature header"
-                        value={payload.result.signatureHeader ?? 'No Signature header found.'}
-                      />
-                    </div>
-                  }
-                />
+              <div className="sticky-submit">
+                <div>
+                  <strong>Inspect request</strong>
+                  <p>The output workspace will update with parsed headers and canonicalized lines.</p>
+                </div>
+                <button type="submit" className="primary-button" disabled={isPending}>
+                  {isPending ? 'Inspecting…' : 'Inspect request'}
+                </button>
               </div>
+            </div>
+          }
+          output={
+            <div className="workspace-output">
+              {isPending ? <LoadingPanel /> : null}
 
-              <ResultCard
-                title="Canonicalized values"
-                description="Each covered component is expanded into the exact value and canonical line used to build the signature base."
-                body={
-                  payload.result.canonicalComponents.length > 0 ? (
-                    <div className="canonical-components">
-                      {payload.result.canonicalComponents.map((component) => (
-                        <section key={component.id} className="canonical-component">
-                          <div className="canonical-component__header">
-                            <strong>{component.id}</strong>
-                            <CopyButton label="Copy line" value={component.line} />
-                          </div>
-                          <CodeBlock label="Canonical value" value={component.value} />
-                          <CodeBlock label="Canonical line" value={component.line} />
-                        </section>
-                      ))}
-                    </div>
-                  ) : (
-                    <CodeBlock label="Canonical components" value="No canonical components were returned." />
-                  )
-                }
-              />
+              {!isPending && error ? (
+                <div className="output-stack">
+                  <StatusBanner
+                    eyebrow="Inspection error"
+                    title="Unable to inspect this request."
+                    description="The request needs to be valid enough for the inspector to parse the signature headers."
+                    tone="danger"
+                  />
+                  <WorkflowPanel title="Error details" tone="danger">
+                    <CodeBlock label="Error" value={error} />
+                  </WorkflowPanel>
+                </div>
+              ) : null}
 
-              <ResultCard
-                title="Parsed dictionaries"
-                description="Use these structured views when comparing label selection and parsed header parameters across different implementations."
-                body={
-                  <div className="stack">
-                    <details className="details-panel" open>
-                      <summary>Parsed Signature-Input</summary>
-                      <CodeBlock label="Signature-Input JSON" value={formatJson(payload.result.parsedSignatureInputs)} />
-                    </details>
-                    <details className="details-panel">
-                      <summary>Parsed Signature</summary>
+              {!isPending && !error && payload ? (
+                <div className="output-stack">
+                  <StatusBanner
+                    eyebrow="Inspection result"
+                    title="Canonicalization breakdown ready."
+                    description="Review the parsed signature headers, covered components, and the exact signature base that the toolkit derived from the request."
+                    tone="default"
+                    actions={<CopyButton label="Copy inspection payload" value={copyAllResult} />}
+                    badges={
+                      <>
+                        <StatusBadge>{payload.result.selectedLabel ?? 'No selected label'}</StatusBadge>
+                        <StatusBadge>{`${payload.result.coveredComponents.length} covered components`}</StatusBadge>
+                        <StatusBadge>
+                          {payload.result.signatureBase ? 'Signature base available' : 'No signature base'}
+                        </StatusBadge>
+                      </>
+                    }
+                  />
+
+                  <WorkflowPanel
+                    title="Parsed request"
+                    description="This is the normalized request shape the inspector used before reconstructing canonical lines."
+                  >
+                    <KeyValueList items={[...formatRequestSummary(payload.request)]} />
+                    <CollapsibleBlock defaultOpen title="Request JSON">
+                      <CodeBlock label="Request JSON" value={formatJson(payload.request)} />
+                    </CollapsibleBlock>
+                  </WorkflowPanel>
+
+                  <WorkflowPanel
+                    title="Signature header selection"
+                    description="Use these values to confirm which label was selected and exactly which covered components were read from the request."
+                  >
+                    <CollapsibleBlock defaultOpen title="Covered components">
+                      <CodeBlock
+                        label="Covered components"
+                        value={joinLines(
+                          payload.result.coveredComponents,
+                          'No covered components were returned.'
+                        )}
+                      />
+                    </CollapsibleBlock>
+                    <CollapsibleBlock title="Signature headers">
+                      <div className="stack">
+                        <CodeBlock
+                          label="Signature-Input header"
+                          value={payload.result.signatureInputHeader ?? 'No Signature-Input header found.'}
+                        />
+                        <CodeBlock
+                          label="Signature header"
+                          value={payload.result.signatureHeader ?? 'No Signature header found.'}
+                        />
+                      </div>
+                    </CollapsibleBlock>
+                  </WorkflowPanel>
+
+                  <WorkflowPanel
+                    title="Canonicalized values"
+                    description="Each covered component is expanded into the exact value and canonical line used to build the signature base."
+                  >
+                    {payload.result.canonicalComponents.length > 0 ? (
+                      <div className="canonical-components">
+                        {payload.result.canonicalComponents.map((component) => (
+                          <section key={component.id} className="canonical-component">
+                            <div className="canonical-component__header">
+                              <strong>{component.id}</strong>
+                              <CopyButton label="Copy line" value={component.line} />
+                            </div>
+                            <CodeBlock label="Canonical value" value={component.value} />
+                            <CodeBlock label="Canonical line" value={component.line} />
+                          </section>
+                        ))}
+                      </div>
+                    ) : (
+                      <CodeBlock
+                        label="Canonical components"
+                        value="No canonical components were returned."
+                      />
+                    )}
+                  </WorkflowPanel>
+
+                  <WorkflowPanel
+                    title="Parsed dictionaries and signature base"
+                    description="Open the structured views when comparing label parameters or the final canonical string with another implementation."
+                  >
+                    <CollapsibleBlock defaultOpen title="Parsed Signature-Input dictionary">
+                      <CodeBlock
+                        label="Signature-Input JSON"
+                        value={formatJson(payload.result.parsedSignatureInputs)}
+                      />
+                    </CollapsibleBlock>
+                    <CollapsibleBlock title="Parsed Signature dictionary">
                       <CodeBlock label="Signature JSON" value={formatJson(payload.result.parsedSignatures)} />
-                    </details>
-                  </div>
-                }
-              />
+                    </CollapsibleBlock>
+                    {payload.result.signatureBase ? (
+                      <CollapsibleBlock defaultOpen title="Signature base">
+                        <CodeBlock label="Signature base" value={payload.result.signatureBase} />
+                      </CollapsibleBlock>
+                    ) : null}
+                  </WorkflowPanel>
+                </div>
+              ) : null}
 
-              {payload.result.signatureBase ? (
-                <ResultCard
-                  title="Signature base"
-                  description="This is the final canonical string reconstructed from the selected label."
-                  body={<CodeBlock label="Signature base" value={payload.result.signatureBase} />}
+              {!isPending && !error && !payload ? (
+                <EmptyState
+                  title="No inspection output yet."
+                  description="Run the inspector to view parsed signature headers, canonical components, and the derived signature base."
+                  action={<Link className="action-link" href="/examples">Inspect a bundled request</Link>}
                 />
               ) : null}
             </div>
-          ) : null}
-
-          {!isPending && !error && !payload ? (
-            <EmptyState
-              title="No inspection output yet."
-              description="Run the inspector to view parsed signature headers, canonical components, and the derived signature base."
-              action={<Link className="action-link" href="/examples">Inspect a bundled request</Link>}
-            />
-          ) : null}
-        </div>
+          }
+        />
       </form>
     </div>
   )

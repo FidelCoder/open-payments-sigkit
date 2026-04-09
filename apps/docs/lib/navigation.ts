@@ -40,8 +40,8 @@ export const commandItems = [
     group: 'Examples',
     href: '/sign?example=grant-request',
     keywords: ['grant', 'sign', 'grant-request', 'create'],
-    label: 'Load grant request in sign',
-    summary: 'Open the grant-request vector directly in the signing workflow.'
+    label: 'Load bootstrap request in sign',
+    summary: 'Open the bootstrap access vector directly in the signing workflow.'
   },
   {
     group: 'Examples',
@@ -65,4 +65,3 @@ export const commandItems = [
     summary: 'Search the full example gallery and load any request into a workflow.'
   }
 ] as const
-

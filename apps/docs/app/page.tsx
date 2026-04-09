@@ -30,14 +30,15 @@ const capabilities = [
   'Sign and verify Open Payments request classes with Ed25519 keys.',
   'Inspect canonical signature bases instead of debugging from opaque headers.',
   'Load raw captured HTTP requests when a real trace matters more than a synthetic payload.',
-  'Verify locally against JWK or JWKS material, with optional remote JWKS resolution when you explicitly choose it.'
+  'Verify locally against JWK or JWKS material, with optional remote JWKS resolution when you explicitly choose it.',
+  'Use the TypeScript reference implementation today and a growing Python library for shared core workflows.'
 ]
 
 const trustSignals = [
   'Deterministic fixtures and signed vectors included in-repo',
   'CLI and docs app use the same core implementation',
   'Typed verification failures with clear remediation text',
-  'Manual interoperability harness for trace-based and live checks'
+  'Python library preview aligned to the same preset and fixture intent'
 ]
 
 export default function HomePage() {
@@ -51,7 +52,9 @@ export default function HomePage() {
             <p>
               This docs app is a serious inspection surface for the toolkit: use it to build
               signed requests, explain verification failures, inspect canonical bases, and move
-              between bundled examples and real captured traces without leaving the repo.
+              between bundled examples and real captured traces without leaving the repo. The
+              TypeScript toolchain is the most complete surface today, and the repository now also
+              includes a Python library preview for the same core request-signing model.
             </p>
           </div>
 
@@ -68,9 +71,10 @@ export default function HomePage() {
           </div>
 
           <div className="hero-card__badges">
+            <StatusBadge>TypeScript reference</StatusBadge>
+            <StatusBadge>Python preview</StatusBadge>
             <StatusBadge>CLI support</StatusBadge>
             <StatusBadge>Raw HTTP traces</StatusBadge>
-            <StatusBadge>Open Payments presets</StatusBadge>
             <StatusBadge>Optional remote JWKS</StatusBadge>
           </div>
         </div>
@@ -90,6 +94,7 @@ export default function HomePage() {
               <li>Choose a workflow.</li>
               <li>Paste a real request or load a deterministic example.</li>
               <li>Inspect the generated or reconstructed signature data.</li>
+              <li>Use the root README for TypeScript and Python library commands.</li>
             </ol>
           </div>
         </div>
@@ -109,7 +114,7 @@ export default function HomePage() {
       <section className="two-column-grid">
         <ResultCard
           title="Current capability summary"
-          description="The toolkit is already usable as a reference signing and debugging environment."
+          description="The toolkit is already usable as a signing and debugging environment, with TypeScript as the reference surface and Python beginning to mirror the core flows."
           body={
             <div className="stack">
               {capabilities.map((capability) => (
@@ -135,6 +140,9 @@ export default function HomePage() {
               <Link className="action-link" href="/inspect?example=incoming-payment">
                 Inspect a resource-write signature base
               </Link>
+              <a className="action-link" href={`${repoHref}#python-api`} target="_blank" rel="noreferrer">
+                Open Python package docs
+              </a>
               <Link className="action-link" href="/examples">
                 Search all bundled examples
               </Link>

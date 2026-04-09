@@ -17,12 +17,13 @@ The following has been validated locally in this repository:
 - docs app build/typecheck/lint paths
 - deterministic conformance vectors and failure matrices
 - opt-in remote JWKS fetch helper behavior with mocked fetch tests
+- Python preview tests for digest creation, signature input parsing, signature-base construction, signing, verification, and inspection
 
 ## Validated With Deterministic Fixtures
 
 Deterministic validation currently covers:
 
-- grant request signing and verification
+- `grant-request` preset signing and verification
 - protected request signing and verification
 - resource-write signing and verification
 - tampered body failures
@@ -36,13 +37,15 @@ Deterministic validation currently covers:
 
 ## Manual Interop Paths Available
 
-The repository now supports manual interoperability workflows for:
+The repository supports manual interoperability workflows for:
 
 - captured raw HTTP traces
 - locally prepared signed requests for manual endpoint dispatch
 - verification using either local JWKS material or an explicitly requested remote JWKS URL
 
 These workflows are documented in `docs/interop-guide.md` and intentionally remain opt-in.
+
+The current manual harnesses are TypeScript-based. Python support is presently focused on local core behavior rather than live or trace-based operator workflows.
 
 ## Not Yet Validated
 
@@ -67,11 +70,11 @@ Browser E2E testing for the docs UI was deferred in this pass.
 
 Reason:
 
-- the highest-value remaining gap for grant-readiness was interoperability proof, not additional browser infrastructure
+- the highest-value remaining gap was interoperability proof, not additional browser infrastructure
 - a browser runner would add new runtime/tooling complexity to a repo whose critical value is the signing, verification, and debugging path
 - the current docs app is already covered by build/typecheck/lint and shares logic with the validated core
 
-This should still be revisited later, but it was intentionally not prioritized over interop tooling and reviewer clarity.
+This should still be revisited later, but it was intentionally not prioritized over interop tooling and core product validation.
 
 ## How To Run Manual Interop Checks
 
@@ -106,6 +109,6 @@ pnpm interop:live -- \
 Near-term interoperability milestones:
 
 - validate captured requests from a real Open Payments integration trace set
-- capture reviewer-friendly screenshots and artifact examples
+- capture artifact examples and working traces from successful manual runs
 - document at least one successful manual live endpoint run
 - decide whether browser E2E is worth the maintenance cost after the interop workflows stabilize

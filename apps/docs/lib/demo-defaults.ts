@@ -45,11 +45,11 @@ const toRequestDefaults = (request: HttpRequestShape): RequestEditorDefaults => 
 
 export const demoExamples: DemoExample[] = [
   {
-    description: 'Client grant creation request signed without an Authorization header.',
-    label: 'Grant request',
+    description: 'Initial access bootstrap request signed without an Authorization header.',
+    label: 'Bootstrap access request',
     name: 'grant-request',
     preset: 'grant-request',
-    requestType: 'grant creation',
+    requestType: 'access bootstrap',
     request: requests.grantRequest as HttpRequestShape
   },
   {

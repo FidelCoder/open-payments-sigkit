@@ -46,7 +46,7 @@ The toolkit emphasizes failure explanations that are actionable:
 - key lookup failures point to `kid` and JWKS mismatches
 - signature mismatch failures include the reconstructed signature base
 
-This makes the toolkit useful for local debugging, SDK generation workflows, and future conformance testing.
+This makes the toolkit useful for local debugging, SDK generation workflows, and future conformance testing across multiple language implementations.
 
 ## Reference Vectors
 
@@ -58,6 +58,8 @@ The fixture package now includes deterministic reference vectors under [`package
 - a verification matrix covering success and common failure modes
 
 These vectors are consumed by the core conformance tests and are intended to be stable reference data for future CLI, docs, SDK-generation, and interoperability work.
+
+The same fixture intent is also used by the Python preview package so the repository can compare behavior across language implementations without changing the core request scenarios.
 
 ## Captured Request Workflow
 

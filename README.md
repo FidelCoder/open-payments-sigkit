@@ -1,54 +1,83 @@
 # open-payments-http-signatures-devkit
 
-`open-payments-http-signatures-devkit` is a focused TypeScript monorepo for Open Payments HTTP Message Signatures. It helps developers sign requests, verify them, inspect the canonical signature base, debug failures, and work with Open Payments-specific request presets without having to stitch together generic RFC 9421 tooling by hand.
+`open-payments-http-signatures-devkit` is an open-source toolkit for Open Payments HTTP Message Signatures. It is built for developers who need more than a low-level RFC 9421 helper: signing, verification, canonicalization inspection, debugging, Open Payments presets, and workflows that start from real captured HTTP requests.
 
 ## Why This Exists
 
-Open Payments depends on HTTP Message Signatures, client keys, and JWKS-driven verification, but the developer experience is still fragmented:
+Open Payments integrations depend on HTTP Message Signatures, client keys, and JWKS-driven verification, but the day-to-day developer experience is still fragmented:
 
-- generic RFC 9421 libraries usually stop at signing primitives
-- Open Payments SDKs do not always give developers a dedicated signing-debugging surface
-- real integration work often starts from captured raw HTTP requests, not idealized objects
-- verification failures are hard to diagnose without signature-base reconstruction and stable error codes
+- generic RFC 9421 libraries often stop at signing primitives
+- SDKs do not always expose a dedicated signature debugging surface
+- real integration work frequently starts from captured raw HTTP traffic
+- verification failures are difficult to diagnose without canonical signature-base reconstruction
 
-This repository fills that gap with a standards-focused toolkit that is intentionally narrower than a full SDK and more useful than a generic signing helper.
+This repository fills that gap with a focused developer toolchain rather than a full SDK.
 
 ## What The Toolkit Provides
 
 - Ed25519 request signing for Open Payments-style HTTP requests
-- Content-Digest generation and verification
-- Signature-Input construction and parsing
-- Signature header parsing
+- `Content-Digest` generation and verification
+- `Signature-Input` construction and parsing
+- `Signature` header parsing
 - canonical signature-base reconstruction for inspection and debugging
 - typed verification results with stable failure codes
-- human-readable verification explanations
+- human-readable verification explanations in the TypeScript package
 - Open Payments presets for common request types
-- raw HTTP request ingestion for captured traces
-- CLI and docs/demo wrappers over the same core implementation
+- raw HTTP request ingestion in the TypeScript package for captured traces
+- CLI and docs/demo wrappers over the same TypeScript core
+
+## Supported Languages
+
+### TypeScript
+
+Current maturity: stable reference implementation
+
+Included today:
+
+- core library in `packages/core`
+- CLI in `apps/cli`
+- docs/demo app in `apps/docs`
+- interoperability scripts in `packages/examples`
+- deterministic fixtures, vectors, and conformance tests
+
+### Python
+
+Current maturity: focused library preview
+
+Included today:
+
+- request model
+- `Content-Digest` creation and validation
+- `Signature-Input` serialization and parsing
+- `Signature` parsing
+- canonical signature-base construction
+- Ed25519 JWK signing and verification
+- `sign_request`
+- `verify_request`
+- `inspect_request_signature`
+- Open Payments presets
+- fixture-backed unit tests and examples
+
+Not yet included in Python:
+
+- raw HTTP request parsing
+- remote JWKS fetching
+- CLI wrapper
+- docs app integration
+- full parity with the TypeScript explainers and interop harness
 
 ## What Is Working Today
 
-The current repository already includes:
-
-- a strict TypeScript core library in `packages/core`
-- a working `op-sig` CLI in `apps/cli`
-- a working Next.js docs/demo app in `apps/docs`
+- strict TypeScript core library in `packages/core`
+- working `op-sig` CLI in `apps/cli`
+- working Next.js docs/demo app in `apps/docs`
 - deterministic request/key fixtures in `packages/fixtures`
 - deterministic signed vectors and verification matrices
 - unit, integration, and conformance tests
 - CI that runs the same `pnpm release:check` path used locally
-- opt-in remote JWKS fetching helpers
+- opt-in remote JWKS helpers in the TypeScript package
 - manual interoperability workflows for captured traces and live endpoint validation
-
-## Why This Matters For The Interledger Open Payments SDK Grant
-
-This repo is aligned with the SDK grant theme described for Open Payments security and generated SDK tooling:
-
-- it improves developer experience around RFC 9421 HTTP Message Signatures
-- it provides dedicated tooling around client keys and JWKS verification
-- it focuses on debugging and inspection, not only happy-path signing
-- it supports trace-based interoperability work, which is critical for real SDK integration
-- it is intentionally positioned as reusable dev tooling rather than a competing full SDK
+- a Python package scaffold with real core signing/verification coverage
 
 ## What This Repo Is Not
 
@@ -57,7 +86,7 @@ This repo is aligned with the SDK grant theme described for Open Payments securi
 - not a wallet server
 - not a hosted SaaS
 - not a browser extension
-- not a multi-language implementation
+- not a full cross-language parity suite yet
 
 ## Monorepo Layout
 
@@ -66,6 +95,8 @@ open-payments-http-signatures-devkit/
   apps/
     cli/
     docs/
+  languages/
+    python/
   packages/
     config/
     core/
@@ -81,8 +112,9 @@ Requirements:
 
 - Node.js `20+`
 - pnpm `10+`
+- Python `3.10+` for the Python package
 
-Install:
+Install JavaScript dependencies:
 
 ```bash
 corepack enable
@@ -96,7 +128,7 @@ Run the full validation path:
 pnpm release:check
 ```
 
-Run the docs app:
+Start the docs app:
 
 ```bash
 pnpm --filter @open-payments-devkit/docs dev
@@ -108,7 +140,7 @@ Build the CLI:
 pnpm --filter @open-payments-devkit/cli build
 ```
 
-## Core API
+## TypeScript API
 
 Current public API:
 
@@ -123,6 +155,23 @@ Current public API:
 - `explainVerificationResult(result)`
 - `getPreset(name)`
 - `fetchRemoteJwks(url, options?)`
+
+## Python API
+
+Current public API:
+
+- `create_content_digest(body)`
+- `verify_content_digest(body, header_value)`
+- `sign_request(request, options)`
+- `verify_request(request, options=None)`
+- `inspect_request_signature(request)`
+- `parse_signature_input(header_value)`
+- `parse_signature(header_value)`
+- `serialize_signature_input(label, components, params)`
+- `build_signature_base(request, parsed_signature_input)`
+- `get_preset(name)`
+
+See `languages/python/README.md` for Python package details.
 
 ## CLI Examples
 
@@ -158,18 +207,6 @@ node apps/cli/dist/index.js verify \
   --json
 ```
 
-Verify using an opt-in remote JWKS URL:
-
-```bash
-node apps/cli/dist/index.js verify \
-  --raw-request-file ./captured-request.http \
-  --jwks-url https://keys.example.com/jwks.json \
-  --jwks-timeout-ms 5000 \
-  --preset protected-request \
-  --default-scheme https \
-  --json
-```
-
 Inspect a signed request:
 
 ```bash
@@ -178,12 +215,30 @@ node apps/cli/dist/index.js inspect \
   --default-scheme https
 ```
 
+## Python Examples
+
+Run from the repo root:
+
+```bash
+pnpm python:example:sign
+pnpm python:example:verify
+pnpm python:example:inspect
+```
+
+Run the Python tests:
+
+```bash
+pnpm python:test
+```
+
 ## Interoperability Workflows
 
-The repo now includes two opt-in manual interoperability workflows:
+The TypeScript toolchain currently includes two manual interoperability workflows:
 
-1. Trace verification
-   Use this when you have a captured real request and want pass/fail diagnostics.
+1. Trace verification for captured real requests
+2. Live request preparation and optional dispatch
+
+Trace verification:
 
 ```bash
 pnpm interop:trace -- \
@@ -193,8 +248,7 @@ pnpm interop:trace -- \
   --default-scheme https
 ```
 
-2. Live request preparation and optional dispatch
-   Use this when you want to sign a real request locally, optionally send it to a manually configured endpoint, and record the signed request/response artifacts.
+Live request preparation and optional dispatch:
 
 ```bash
 pnpm interop:live -- \
@@ -230,46 +284,25 @@ The docs app provides:
 - `/inspect` canonical signature-base inspection
 - `/examples` bundled fixture flows
 
-Each tool supports both:
+Each tool supports both structured request input and pasted raw HTTP request input.
 
-- structured request input
-- pasted raw HTTP request input
+The docs site is currently TypeScript-backed. Python support is provided as a library package and examples, not yet as a second docs UI.
 
-This makes the docs app useful for both onboarding and real trace inspection.
+## Suggested Screenshots
 
-## Screenshot Placeholders
+Actual screenshots have not been committed yet. Suggested product screenshots:
 
-Actual screenshots have not been committed yet. Recommended reviewer-facing screenshots:
-
-- Placeholder: `/sign` using raw HTTP request mode with generated `Content-Digest`, `Signature-Input`, and `Signature`
-- Placeholder: `/verify` showing a typed verification failure and reconstructed signature base
-- Placeholder: CLI trace verification against a captured Open Payments request
-
-## Current Validation Status
-
-Validated today:
-
-- deterministic fixture-based signing and verification
-- raw HTTP parsing and verification
-- CLI signing, verification, and inspection workflows
-- docs app build, lint, and typecheck
-- conformance vectors and failure matrix
-- optional remote JWKS resolution helper tests with mocked fetch behavior
-
-Still intentionally manual:
-
-- live endpoint interoperability checks
-- browser E2E coverage for the docs UI
-- release publishing automation
+- `/sign` using raw HTTP request mode with generated `Content-Digest`, `Signature-Input`, and `Signature`
+- `/verify` showing a typed verification failure and reconstructed signature base
+- the examples gallery loading a deterministic request into a workflow
 
 ## Planned Next Work
 
-Planned, but not yet completed:
-
-- deeper interoperability validation against real Open Payments environments
-- expanded reviewer-facing screenshots and examples
-- optional upstream integration and broader conformance support
-- release/publishing automation once the interop story is stable
+- deepen interoperability validation against real Open Payments environments
+- expand Python coverage toward feature parity with the TypeScript reference implementation
+- broaden conformance vectors and captured trace packs
+- improve release and publishing automation
+- continue refining the docs experience for real debugging workflows
 
 ## Useful Commands
 
@@ -280,6 +313,7 @@ pnpm build
 pnpm typecheck
 pnpm test
 pnpm lint
+pnpm python:test
 pnpm release:check
 ```
 
@@ -302,3 +336,4 @@ pnpm interop:live -- --help
 - `docs/interop-guide.md`
 - `docs/interop-status.md`
 - `docs/roadmap.md`
+- `languages/python/README.md`

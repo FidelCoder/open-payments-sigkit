@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { DemoExample, DemoSelectionName, DemoToolRoute } from '../lib/demo-defaults'
+import { ToolbarRow } from './toolbar-row'
 
 type ExampleSwitcherProps = {
   currentExample: DemoSelectionName
@@ -14,19 +15,15 @@ export function ExampleSwitcher({
 }: ExampleSwitcherProps) {
   return (
     <section className="example-switcher">
-      <div className="example-switcher__header">
-        <div>
-          <p className="eyebrow">Examples</p>
-          <h2>Load a bundled request when you want a clean starting point.</h2>
-          <p>
-            The workflows default to your own request, but you can jump into deterministic Open
-            Payments vectors at any point.
-          </p>
+      <ToolbarRow compact>
+        <div className="example-switcher__intro">
+          <p className="eyebrow">Reference vectors</p>
+          <p>Load a deterministic request only when you want a known-good starting point.</p>
         </div>
         <Link className="ghost-link" href="/examples">
-          Open example gallery
+          Open gallery
         </Link>
-      </div>
+      </ToolbarRow>
 
       <div className="example-switcher__grid" aria-label={`${route} examples`}>
         <Link

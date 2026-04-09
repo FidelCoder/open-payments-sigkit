@@ -1,7 +1,7 @@
 {
   "name": "open-payments-http-signatures-devkit",
   "version": "0.1.0",
-  "description": "Focused developer tooling for Open Payments HTTP Message Signatures, Content-Digest, Ed25519 signing, and verification debugging.",
+  "description": "Open-source developer tooling for Open Payments HTTP Message Signatures, Content-Digest, Ed25519 signing, verification debugging, and multi-language library support.",
   "private": true,
   "packageManager": "pnpm@10.24.0",
   "repository": {
@@ -29,12 +29,17 @@
     "interop:live": "pnpm --filter @open-payments-devkit/examples interop:live",
     "interop:trace": "pnpm --filter @open-payments-devkit/examples interop:trace",
     "lint": "turbo run lint",
+    "python:example:inspect": "PYTHONPATH=languages/python/src python3 languages/python/examples/inspect_example.py",
+    "python:example:sign": "PYTHONPATH=languages/python/src python3 languages/python/examples/sign_example.py",
+    "python:example:verify": "PYTHONPATH=languages/python/src python3 languages/python/examples/verify_example.py",
+    "python:test": "PYTHONPATH=languages/python/src python3 -m unittest discover -s languages/python/tests",
+    "python:check": "pnpm python:test",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "turbo run clean",
-    "release:check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "release:check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm python:check"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

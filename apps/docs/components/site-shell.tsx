@@ -8,10 +8,10 @@ import { CommandMenu } from './command-menu'
 import { docsNavLinks, repoHref } from '../lib/navigation'
 
 const trustSignals = [
+  'TypeScript reference implementation with CLI and docs UI',
   'Deterministic fixtures and conformance vectors',
-  'CLI and docs UI backed by one shared core',
   'Raw HTTP trace ingestion for real request captures',
-  'Optional remote JWKS verification flows'
+  'Python library preview for shared signing and verification workflows'
 ]
 
 const capabilitySummary = [
@@ -19,7 +19,8 @@ const capabilitySummary = [
   'Build Signature-Input',
   'Sign Ed25519 requests',
   'Verify against JWK or JWKS',
-  'Inspect canonical signature bases'
+  'Inspect canonical signature bases',
+  'Grow toward multi-language library support'
 ]
 
 const isRouteActive = (pathname: string, href: string): boolean => {
@@ -85,7 +86,7 @@ export function SiteShell({ children }: PropsWithChildren) {
               <span className="brand-lockup__mark">OP</span>
               <span className="brand-lockup__copy">
                 <strong>HTTP Signatures Devkit</strong>
-                <small>Open Payments signing, verification, inspection</small>
+                <small>TypeScript reference, Python preview</small>
               </span>
             </Link>
           </div>

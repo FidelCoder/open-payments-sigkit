@@ -1,6 +1,6 @@
 # Interoperability Guide
 
-This project now supports two manual interoperability workflows:
+This project currently supports two manual interoperability workflows in the TypeScript toolchain:
 
 1. trace-based verification for captured Open Payments traffic
 2. live request preparation and optional dispatch for manual endpoint testing
@@ -11,6 +11,11 @@ These workflows are intentionally opt-in:
 - no live network path runs in CI by default
 - local JWK/JWKS verification remains the default verification mode
 - remote JWKS fetching only happens when explicitly requested
+
+Python note:
+
+- the Python package currently covers local signing, verification, and inspection with fixture-backed tests
+- the trace and live dispatch harnesses remain TypeScript-first today
 
 ## When To Use Which Flow
 
@@ -143,13 +148,13 @@ Content-Type: application/json
 {"receiver":"https://wallet.example.com/bob"}
 ```
 
-## Recommended Reviewer Demo Flow
+## Suggested Manual Demo Flow
 
-For a short manual reviewer demo:
+For a short manual walkthrough:
 
 1. verify a captured request with `pnpm interop:trace`
 2. show the resulting pass/fail diagnostics and signature base
 3. prepare a signed live request with `pnpm interop:live`
 4. save the signed request artifacts to disk
 
-This demonstrates that the project is useful for more than fixture-only local development while still avoiding unsafe assumptions about live credentials or environments.
+This shows how the toolkit can move from deterministic fixtures to real captured traffic while still avoiding unsafe assumptions about live credentials or environments.
