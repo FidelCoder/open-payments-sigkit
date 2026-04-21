@@ -1,0 +1,49 @@
+{
+  "name": "@open-payments-devkit/kiota-adapter",
+  "version": "0.1.0",
+  "description": "RFC 9421 HTTP Message Signatures authentication provider for Kiota-generated Open Payments SDKs.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@open-payments-devkit/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@microsoft/kiota-abstractions": ">=1.0.0-preview.50"
+  },
+  "peerDependenciesMeta": {
+    "@microsoft/kiota-abstractions": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@microsoft/kiota-abstractions": "^1.0.0-preview.86",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "keywords": [
+    "open-payments",
+    "http-message-signatures",
+    "rfc9421",
+    "kiota",
+    "authentication-provider"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}

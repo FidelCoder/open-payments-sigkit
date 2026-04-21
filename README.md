@@ -35,6 +35,7 @@ Current maturity: stable reference implementation
 Included today:
 
 - core library in `packages/core`
+- Kiota SDK authentication provider in `packages/kiota-adapter`
 - CLI in `apps/cli`
 - docs/demo app in `apps/docs`
 - interoperability scripts in `packages/examples`
@@ -42,7 +43,7 @@ Included today:
 
 ### Python
 
-Current maturity: focused library preview
+Current maturity: library with core signing, verification, and debugging coverage
 
 Included today:
 
@@ -55,29 +56,31 @@ Included today:
 - `sign_request`
 - `verify_request`
 - `inspect_request_signature`
+- raw HTTP request parsing for captured traces
+- remote JWKS fetching
+- human-readable verification result explanations
 - Open Payments presets
 - fixture-backed unit tests and examples
 
 Not yet included in Python:
 
-- raw HTTP request parsing
-- remote JWKS fetching
 - CLI wrapper
 - docs app integration
-- full parity with the TypeScript explainers and interop harness
+- full parity with the TypeScript interop harness
 
 ## What Is Working Today
 
 - strict TypeScript core library in `packages/core`
+- Kiota SDK authentication provider adapter in `packages/kiota-adapter`
 - working `op-sig` CLI in `apps/cli`
 - working Next.js docs/demo app in `apps/docs`
 - deterministic request/key fixtures in `packages/fixtures`
 - deterministic signed vectors and verification matrices
 - unit, integration, and conformance tests
 - CI that runs the same `pnpm release:check` path used locally
-- opt-in remote JWKS helpers in the TypeScript package
+- opt-in remote JWKS helpers in both TypeScript and Python packages
 - manual interoperability workflows for captured traces and live endpoint validation
-- a Python package scaffold with real core signing/verification coverage
+- a Python package with core signing, verification, inspection, raw HTTP parsing, and debugging coverage
 
 ## What This Repo Is Not
 
@@ -102,6 +105,7 @@ open-payments-http-signatures-devkit/
     core/
     examples/
     fixtures/
+    kiota-adapter/
   docs/
   .github/
 ```
@@ -168,6 +172,25 @@ After importing the repository into Vercel, set the project root to `apps/docs` 
 
 If the project was created with a newer default Node.js version in Vercel, switch it to `20.x` or `22.x` in the Vercel project settings before deploying.
 
+## Kiota SDK Integration
+
+The `packages/kiota-adapter` package provides an `HttpSignatureAuthProvider` that implements the Kiota `AuthenticationProvider` interface for RFC 9421 HTTP Message Signatures. This allows Kiota-generated Open Payments SDKs to sign requests automatically.
+
+```typescript
+import { HttpSignatureAuthProvider } from '@open-payments-devkit/kiota-adapter'
+import { FetchRequestAdapter } from '@microsoft/kiota-http-fetchlibrary'
+
+const authProvider = new HttpSignatureAuthProvider({
+  privateKeyJwk: myPrivateKey,
+  keyId: 'my-key-id',
+  preset: 'protected-request'
+})
+
+const adapter = new FetchRequestAdapter(authProvider)
+```
+
+This adapter bridges the gap until Kiota adds native RFC 9421 support ([microsoft/kiota#6907](https://github.com/microsoft/kiota/issues/6907)). See `packages/kiota-adapter/README.md` for full details.
+
 ## TypeScript API
 
 Current public API:
@@ -197,6 +220,9 @@ Current public API:
 - `parse_signature(header_value)`
 - `serialize_signature_input(label, components, params)`
 - `build_signature_base(request, parsed_signature_input)`
+- `parse_raw_http_request(raw_request, default_scheme?)`
+- `explain_verification_result(result)`
+- `fetch_remote_jwks(url, options?)`
 - `get_preset(name)`
 
 See `languages/python/README.md` for Python package details.
