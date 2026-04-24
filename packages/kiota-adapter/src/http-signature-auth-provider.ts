@@ -1,6 +1,5 @@
 import type { JsonWebKey } from 'node:crypto'
 import {
-  createContentDigest,
   signRequest,
   type PresetName,
   type SignedRequestResult
@@ -142,7 +141,8 @@ export class HttpSignatureAuthProvider {
    */
   public async authenticateRequest(
     request: SignableRequest,
-    _additionalAuthenticationContext?: Record<string, unknown>
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    additionalAuthenticationContext?: Record<string, unknown>
   ): Promise<void> {
     const method = request.httpMethod ?? 'GET'
     const url = request.URL
